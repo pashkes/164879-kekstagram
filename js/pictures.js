@@ -38,23 +38,35 @@ var fragment = document.createDocumentFragment();
 
 var createDOMElement = function (dataPhoto) {
   var templateItem = document.getElementById('picture-template').content.querySelector('.picture');
-  var itemElement = templateItem.cloneNode(true);
-  itemElement.href = dataPhoto.url;
-  itemElement.querySelector('img').src = dataPhoto.url;
-  itemElement.querySelector('.picture-likes').textContent = dataPhoto.likes;
-  for (var j = 0; j < dataPhoto.comments.length; j++) {
-    var cloneComments = itemElement.querySelector('.picture-comments').cloneNode(true);
-    cloneComments.textContent = dataPhoto.comments[j];
-    itemElement.querySelector('.picture-stats').insertBefore(cloneComments, itemElement.querySelector('.picture-likes'));
+  for (var i = 0; i < dataPhoto.length; i++) {
+    var itemElement = templateItem.cloneNode(true);
+    itemElement.href = dataPhoto[i].url;
+    itemElement.querySelector('img').src = dataPhoto[i].url;
+    itemElement.querySelector('.picture-likes').textContent = dataPhoto.likes;
+    for (var j = 0; j < dataPhoto[i].comments.length; j++) {
+      var cloneComments = itemElement.querySelector('.picture-comments').cloneNode(true);
+      cloneComments.textContent = dataPhoto[i].comments[j];
+      itemElement.querySelector('.picture-stats').insertBefore(cloneComments, itemElement.querySelector('.picture-likes'));
+    }
+    fragment.appendChild(itemElement);
   }
-  fragment.appendChild(itemElement);
   return fragment;
 };
 
 var renderPhoto = function (dataHTML) {
-  for (var i = 0; i < dataHTML.length; i++) {
-    createDOMElement(dataHTML[i]);
-  }
+  var pictures = document.querySelector('.pictures');
+  pictures.appendChild(createDOMElement(dataHTML));
 };
+// renderPhoto(data);
 
-console.log(createDOMElement(renderPhoto));
+var renderGalery = function (dataArray) {
+  var overlay = document.querySelector('.gallery-overlay');
+  var mainImage = overlay.querySelector('.gallery-overlay-image');
+  var likes = overlay.querySelector('.likes-count');
+  var commentsCount = overlay.querySelector('.comments-count');
+  overlay.classList.remove('hidden');
+  mainImage.src = dataArray[0].url;
+  likes.textContent = Math.round(getRangeRandomNumbers(15, 200));
+  commentsCount.textContent = dataArray[0].comments.length;
+};
+renderGalery(data);
