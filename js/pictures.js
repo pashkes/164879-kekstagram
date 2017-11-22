@@ -34,10 +34,10 @@ var createPhotoData = function () {
 };
 
 var data = createPhotoData();
+var fragment = document.createDocumentFragment();
 
 var createDOMElement = function (dataPhoto) {
   var templateItem = document.getElementById('picture-template').content.querySelector('.picture');
-  var fragment = document.createDocumentFragment();
   var itemElement = templateItem.cloneNode(true);
   itemElement.href = dataPhoto.url;
   itemElement.querySelector('img').src = dataPhoto.url;
@@ -51,10 +51,10 @@ var createDOMElement = function (dataPhoto) {
   return fragment;
 };
 
-var renderPhoto = function () {
-  for (var i = 0; i < data.length; i++) {
-    createDOMElement(data[i]);
+var renderPhoto = function (dataHTML) {
+  for (var i = 0; i < dataHTML.length; i++) {
+    createDOMElement(dataHTML[i]);
   }
 };
 
-console.log(renderPhoto());
+console.log(createDOMElement(renderPhoto));
