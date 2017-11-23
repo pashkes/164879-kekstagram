@@ -1,6 +1,6 @@
 'use strict';
 
-var commentsData = [
+var mockCommentsData = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -13,23 +13,21 @@ var getRangeRandomNumbers = function (min, max) {
   return Math.random() * (max - min) + min;
 };
 
-var createPhotoData = function () {
-  var quantityObject = 25;
+var photoData = function () {
+  var gallerySize = 26;
   var dataObjects = [];
-  var photoStart = 1;
-  for (var i = 0; i < quantityObject; i++) {
-    // get random commentsData
-    var firstHalfComments = Math.round(getRangeRandomNumbers(0, Math.ceil(commentsData.length - 1) / 2));
-    var secondHalfComments = Math.round(getRangeRandomNumbers(Math.ceil((commentsData.length - 1) / 2), commentsData.length - 1));
-    dataObjects[i] = {
-      url: 'photos/' + [photoStart] + '.jpg',
+  for (var i = 1; i < gallerySize; i++) {
+    // get random mockCommentsData
+    var firstCommentIndex = Math.round(getRangeRandomNumbers(0, Math.ceil(mockCommentsData.length - 1) / 2));
+    var secondCommentIndex = Math.round(getRangeRandomNumbers(Math.ceil((mockCommentsData.length - 1) / 2), mockCommentsData.length - 1));
+    dataObjects[i - 1] = {
+      url: 'photos/' + i + '.jpg',
       likes: getRangeRandomNumbers(15, 200),
       commentsData: [
-        commentsData[firstHalfComments],
-        commentsData[secondHalfComments]
+        mockCommentsData[firstCommentIndex],
+        mockCommentsData[secondCommentIndex]
       ]
     };
-    photoStart++;
   }
   return dataObjects;
 };
@@ -42,16 +40,21 @@ var createDOMElement = function (dataPhoto) {
     itemElement.href = dataPhoto[i].url;
     itemElement.querySelector('img').src = dataPhoto[i].url;
     itemElement.querySelector('.picture-likes').textContent = dataPhoto.likes;
-    for (var j = 0; j < dataPhoto[i].commentsData.length; j++) {
-      var commentsElement = itemElement.querySelectorAll('.picture-comments')[0];
-      var cloneComments = commentsElement.cloneNode(true);
-      cloneComments.textContent = dataPhoto[i].commentsData[j];
-      itemElement.querySelector('.picture-stats').insertBefore(cloneComments, itemElement.querySelector('.picture-likes'));
-    }
-    commentsElement.remove();
+    renderComments(dataPhoto, itemElement, i);
+    // commentsElement.remove();
     fragment.appendChild(itemElement);
   }
   return fragment;
+};
+
+var renderComments = function (comments, item, indexElement) {
+  for (var j = 0; j < comments[indexElement].commentsData.length; j++) {
+    var commentsElement = item.querySelectorAll('.picture-comments')[0];
+    var cloneComments = commentsElement.cloneNode(true);
+    cloneComments.textContent = comments[indexElement].commentsData[j];
+    item.querySelector('.picture-stats').insertBefore(cloneComments, item.querySelector('.picture-likes'));
+  }
+  commentsElement.remove();
 };
 
 var renderPhoto = function (dataHTML) {
@@ -71,8 +74,8 @@ var renderPreview = function (dataArray) {
 };
 
 var renderGallery = function () {
-  var dataGallery = createPhotoData();
-  renderPhoto(dataGallery);
-  renderPreview(dataGallery);
+  var photoGallery = photoData();
+  renderPhoto(photoGallery);
+  renderPreview(photoGallery);
 };
 renderGallery();
