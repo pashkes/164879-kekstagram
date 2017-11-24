@@ -13,7 +13,7 @@ var getRangeRandomNumbers = function (min, max) {
   return Math.random() * (max - min) + min;
 };
 
-var photoData = function () {
+var getPhotoData = function () {
   var gallerySize = 26;
   var dataObjects = [];
   for (var i = 1; i < gallerySize; i++) {
@@ -74,7 +74,7 @@ var renderPreview = function (dataArray) {
 };
 
 var renderGallery = function () {
-  var photoGallery = photoData();
+  var photoGallery = getPhotoData();
   renderPhoto(photoGallery);
   renderPreview(photoGallery);
 };
