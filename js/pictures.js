@@ -5,7 +5,8 @@ var OVERLAY_CLASS = '.gallery-overlay';
 var OVERLAY_IMAGE_CLASS = '.gallery-overlay-image';
 var OVERLAY_COMMENTS_CLASS = '.comments-count';
 var OVERLAY_LIKES_COUNT = '.likes-count';
-
+var ESC_KEY = 27;
+var ENTER_KEY = 13;
 var MOCK_COMMENTS_DATA = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -16,19 +17,19 @@ var MOCK_COMMENTS_DATA = [
 ];
 
 var getRangeRandomNumbers = function (min, max) {
-  return Math.random() * (max - min) + min;
+  return Math.round(Math.random() * (max - min) + min);
 };
 
 var getPhotoData = function () {
   var gallerySize = 26;
   var dataObjects = [];
-  for (var i = 1; i < gallerySize; i++) {
+  for (var i = 0; i < gallerySize; i++) {
     // get random MOCK_COMMENTS_DATA
-    var firstCommentIndex = Math.round(getRangeRandomNumbers(0, Math.ceil(MOCK_COMMENTS_DATA.length - 1) / 2));
-    var secondCommentIndex = Math.round(getRangeRandomNumbers(Math.ceil((MOCK_COMMENTS_DATA.length - 1) / 2), MOCK_COMMENTS_DATA.length - 1));
-    dataObjects[i - 1] = {
-      url: 'photos/' + i + '.jpg',
-      likes: Math.floor(getRangeRandomNumbers(15, 200)),
+    var firstCommentIndex = getRangeRandomNumbers(0, Math.ceil(MOCK_COMMENTS_DATA.length - 1) / 2);
+    var secondCommentIndex = getRangeRandomNumbers(Math.ceil((MOCK_COMMENTS_DATA.length - 1) / 2), MOCK_COMMENTS_DATA.length - 1);
+    dataObjects[i] = {
+      url: 'photos/' + (i + 1) + '.jpg',
+      likes: getRangeRandomNumbers(15, 200),
       commentsData: [
         MOCK_COMMENTS_DATA[firstCommentIndex],
         MOCK_COMMENTS_DATA[secondCommentIndex]
@@ -79,29 +80,46 @@ var renderPreview = function (dataArray) {
 
 var overlay = document.querySelector(OVERLAY_CLASS);
 
+var insertCurrentContent = function (evt) {
+  evt.preventDefault();
+  var currentTarget = evt.currentTarget;
+  var picturePatchFile = currentTarget.querySelector('img').src;
+  var mainPicture = overlay.querySelector(OVERLAY_IMAGE_CLASS);
+  var likesCount = currentTarget.querySelector('.picture-likes').textContent;
+  var commentCount = currentTarget.querySelectorAll('.picture-comments').length;
+  overlay.querySelector(OVERLAY_LIKES_COUNT).textContent = likesCount;
+  mainPicture.src = picturePatchFile;
+  overlay.querySelector(OVERLAY_COMMENTS_CLASS).textContent = commentCount.toString();
+  overlay.classList.remove(HIDDEN_CLASS);
+};
+
+var removeOverlayClass = function () {
+  overlay.classList.add(HIDDEN_CLASS);
+};
+
 var showPicture = function () {
   var pictures = document.querySelectorAll('.picture');
   for (var i = 0; i < pictures.length; i++) {
-    pictures[i].addEventListener('click', function (evt) {
-      evt.preventDefault();
-      var currentTarget = evt.currentTarget;
-      var currentPicture = evt.target.src;
-      var mainPicture = overlay.querySelector(OVERLAY_IMAGE_CLASS);
-      var likesCount = currentTarget.querySelector('.picture-likes').textContent;
-      var commentCount = currentTarget.querySelectorAll('.picture-comments').length;
-      overlay.querySelector(OVERLAY_LIKES_COUNT).textContent = likesCount;
-      mainPicture.src = currentPicture;
-      overlay.querySelector(OVERLAY_COMMENTS_CLASS).textContent = commentCount.toString();
-      overlay.classList.remove(HIDDEN_CLASS);
-    });
+    pictures[i].addEventListener('click', insertCurrentContent);
   }
+};
+
+var closeOverlay = function (evt) {
+  if (evt.keyCode === ESC_KEY) {
+    removeOverlayClass();
+  }
+  // else if (evt.keyCode === ENTER_KEY) {
+  //   removeOverlayClass();
+  // }
 };
 
 var hiddenPicture = function () {
   var closeButton = document.querySelector('.gallery-overlay-close');
-  closeButton.onclick = function () {
-    overlay.classList.add(HIDDEN_CLASS);
-  };
+  closeButton.addEventListener('click', removeOverlayClass);
+  closeButton.addEventListener('keyup', closeOverlay);
+  if (overlay.classList.contains('hidden')) {
+    document.addEventListener('keyup', closeOverlay);
+  }
 };
 
 var renderGallery = function () {
