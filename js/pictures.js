@@ -141,7 +141,7 @@ var addHandlerForClickOnPicture = function () {
 var removeHandlerClosePicture = function () {
   removeEventListener('click', addHandlerForClickOnPicture);
   removeEventListener('keydown', addHandlerForClickOnPicture);
-}
+};
 
 /*
  * Check which button is pressed.
