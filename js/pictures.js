@@ -108,10 +108,9 @@ var renderPreviewPictures = function (dataArray) {
  * Retrieving data from the element by which the click occurred
  * Set of received data in DOM overlay elements
  */
-var insertCurrentContent = function (evt) {
-  evt.preventDefault();
-  var target = evt.target;
-  var currentElement = target.closest('.picture');
+var insertCurrentContent = function (event) {
+  event.preventDefault();
+  var currentElement = event.target.closest('.picture');
   if (!currentElement) {
     return;
   }
@@ -123,30 +122,35 @@ var insertCurrentContent = function (evt) {
   mainPicture.src = srcPicture;
   overlay.querySelector(OVERLAY_COMMENTS_CLASS).textContent = commentCount.toString();
   overlay.classList.remove(HIDDEN_CLASS);
+  addHandlerForClosePicture();
 };
 
 var removeOverlayClass = function () {
   overlay.classList.add(HIDDEN_CLASS);
+  removeHandlerClosePicture();
 };
 
 /*
  * On the click event of pictures, insert data into the overlay received from the current item
  */
-var showPicture = function () {
+var addHandlerForClickOnPicture = function () {
   var container = document.querySelector('.pictures');
   container.addEventListener('click', insertCurrentContent);
 };
+
+var removeHandlerClosePicture = function () {
+  removeEventListener('click', addHandlerForClickOnPicture);
+  removeEventListener('keydown', addHandlerForClickOnPicture);
+}
 
 /*
  * Check which button is pressed.
  * Closing an overlay with a picture.
  */
-var checkKeyDown = function (evt) {
-  if (evt.keyCode === ESC_KEY) {
+var checkKeyDown = function (event) {
+  if (event.keyCode === ESC_KEY) {
     removeOverlayClass();
-    return;
-  }
-  if (evt.keyCode === ENTER_KEY) {
+  } else if (event.keyCode === ENTER_KEY) {
     removeOverlayClass();
   }
 };
@@ -154,13 +158,9 @@ var checkKeyDown = function (evt) {
 /*
  * If there is no class 'hidden' - add events (Click, keyDown) to the close button of the overlay and the overlay itself
  */
-var closePicture = function () {
+var addHandlerForClosePicture = function () {
   var closeButton = document.querySelector('.gallery-overlay-close');
-  if (!overlay.classList.contains('hidden')) {
-    return;
-  }
   closeButton.addEventListener('click', removeOverlayClass);
-  closeButton.addEventListener('keyDown', checkKeyDown);
   document.addEventListener('keydown', checkKeyDown);
 };
 
@@ -168,7 +168,6 @@ var renderGallery = function () {
   var photoGallery = getPhotoData();
   renderPhoto(photoGallery);
   renderPreviewPictures(photoGallery);
-  showPicture();
-  closePicture();
+  addHandlerForClickOnPicture();
 };
 renderGallery();
