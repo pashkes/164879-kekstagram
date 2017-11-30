@@ -112,6 +112,9 @@ var insertCurrentContent = function (evt) {
   evt.preventDefault();
   var target = evt.target;
   var currentElement = target.closest('.picture');
+  if (!currentElement) {
+    return;
+  }
   var srcPicture = currentElement.querySelector('img').src;
   var mainPicture = overlay.querySelector(OVERLAY_IMAGE_CLASS);
   var likesCount = currentElement.querySelector('.picture-likes').textContent;
