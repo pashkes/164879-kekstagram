@@ -161,6 +161,7 @@ var checkKeyDown = function (event) {
 var addHandlerForClosePicture = function () {
   var closeButton = document.querySelector('.gallery-overlay-close');
   closeButton.addEventListener('click', removeOverlayClass);
+  closeButton.addEventListener('keydown', removeOverlayClass);
   document.addEventListener('keydown', checkKeyDown);
 };
 
