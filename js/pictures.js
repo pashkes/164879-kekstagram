@@ -108,7 +108,7 @@ var renderPreviewPictures = function (dataArray) {
  * Retrieving data from the element by which the click occurred
  * Set of received data in DOM overlay elements
  */
-var insertCurrentContent = function (event) {
+var showBigPictureWithOverlay = function (event) {
   event.preventDefault();
   var currentElement = event.target.closest('.picture');
   if (!currentElement) {
@@ -135,7 +135,7 @@ var removeOverlayClass = function () {
  */
 var addHandlerForClickOnPicture = function () {
   var container = document.querySelector('.pictures');
-  container.addEventListener('click', insertCurrentContent);
+  container.addEventListener('click', showBigPictureWithOverlay);
 };
 
 var removeHandlerClosePicture = function () {
@@ -148,9 +148,7 @@ var removeHandlerClosePicture = function () {
  * Closing an overlay with a picture.
  */
 var checkKeyDown = function (event) {
-  if (event.keyCode === ESC_KEY) {
-    removeOverlayClass();
-  } else if (event.keyCode === ENTER_KEY) {
+  if ((event.keyCode === ESC_KEY) || (event.keyCode === ENTER_KEY)) {
     removeOverlayClass();
   }
 };
@@ -161,7 +159,6 @@ var checkKeyDown = function (event) {
 var addHandlerForClosePicture = function () {
   var closeButton = document.querySelector('.gallery-overlay-close');
   closeButton.addEventListener('click', removeOverlayClass);
-  closeButton.addEventListener('keydown', checkKeyDown);
   document.addEventListener('keydown', checkKeyDown);
 };
 
