@@ -161,6 +161,9 @@ var filtersContainer = document.querySelector('.upload-effect-controls');
 var hashTagsField = document.querySelector('.upload-form-hashtags');
 var formSubmit = document.querySelector('.upload-form-submit');
 var imgPreview = document.querySelector('.effect-image-preview');
+var uploadOverlay = document.querySelector('.upload-overlay');
+var closeButton = document.querySelector('.upload-form-cancel');
+var resizeControls = document.querySelector('.upload-resize-controls');
 
 /**
  * Добавление обработчика на изменения поля загрузки фото
@@ -253,10 +256,6 @@ var renderGallery = function () {
   addHandlerUploadPhoto();
 };
 renderGallery();
-
-var uploadOverlay = document.querySelector('.upload-overlay');
-var closeButton = document.querySelector('.upload-form-cancel');
-var resizeControls = document.querySelector('.upload-resize-controls');
 
 /*
  * Добавление бработчиков которые нужны внутри попапа
