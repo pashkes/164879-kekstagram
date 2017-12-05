@@ -156,6 +156,12 @@ var addHandlerForClosePicture = function () {
   document.addEventListener('keydown', checkKeyDown);
 };
 
+
+var filtersContainer = document.querySelector('.upload-effect-controls');
+var hashTagsField = document.querySelector('.upload-form-hashtags');
+var formSubmit = document.querySelector('.upload-form-submit');
+var imgPreview = document.querySelector('.effect-image-preview');
+
 /**
  * Добавление обработчика на изменения поля загрузки фото
  */
@@ -189,19 +195,20 @@ var hideUploadOverlay = function () {
  * текущее значение зума
  */
 var handlerResizeButton = function (event) {
-  var zoomOut = event.target.closest('.upload-resize-controls-button-dec');
-  var zoomIn = event.target.closest('.upload-resize-controls-button-inc');
-  var zoomValue = resizeControls.querySelector('.upload-resize-controls-value');
   var STEP_ZOOM = 25;
   var MIN_ZOOM = STEP_ZOOM;
   var MAX_ZOOM = 100;
+  var PERCENT_SYMBOL = '%';
+  var zoomOut = event.target.closest('.upload-resize-controls-button-dec');
+  var zoomIn = event.target.closest('.upload-resize-controls-button-inc');
+  var zoomValue = resizeControls.querySelector('.upload-resize-controls-value');
   var currentValueZoom = parseInt(zoomValue.value, 10);
   if (zoomOut) {
     if (currentValueZoom <= MIN_ZOOM || currentValueZoom > MAX_ZOOM) {
       return;
     }
     currentValueZoom -= STEP_ZOOM;
-    zoomValue.value = currentValueZoom + '%';
+    zoomValue.value = currentValueZoom + PERCENT_SYMBOL;
     setImgZoom(currentValueZoom, MAX_ZOOM);
   }
   if (zoomIn) {
@@ -209,7 +216,7 @@ var handlerResizeButton = function (event) {
       return;
     }
     currentValueZoom += STEP_ZOOM;
-    zoomValue.value = currentValueZoom + '%';
+    zoomValue.value = currentValueZoom + PERCENT_SYMBOL;
     setImgZoom(currentValueZoom, MAX_ZOOM);
   }
 };
@@ -250,10 +257,6 @@ renderGallery();
 var uploadOverlay = document.querySelector('.upload-overlay');
 var closeButton = document.querySelector('.upload-form-cancel');
 var resizeControls = document.querySelector('.upload-resize-controls');
-var filtersContainer = document.querySelector('.upload-effect-controls');
-var hashTagsField = document.querySelector('.upload-form-hashtags');
-var formSubmit = document.querySelector('.upload-form-submit');
-var imgPreview = document.querySelector('.effect-image-preview');
 
 /*
  * Добавление бработчиков которые нужны внутри попапа
@@ -379,25 +382,25 @@ var totalResetOnClosing = function () {
  * Иначе сбрасывать стиль ошибки
  */
 var checkValidHashTags = function (event) {
-  var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
-  var maxAmount = 5;
-  var maxLength = 20;
+  var MAX_AMOUNT = 5;
+  var MAX_SYMBOL = 20;
   var FIRST_INDEX = 0;
-  var minLength = 1;
+  var MIN_SYMBOL = 1;
+  var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
   var resetStyleError = true;
-  if (hashTags[0] === '') {
+  if (hashTags[FIRST_INDEX] === '') {
     return;
   }
   for (var i = 0; i < hashTags.length; i++) {
-    if (hashTags.length > maxAmount
+    if (hashTags.length > MAX_AMOUNT
       || hashTags[FIRST_INDEX] === ''
       || hashTags[i][FIRST_INDEX] !== '#'
       || hashTags[i] === ' '
       || hashTags[i] === hashTags[i + 1]
-      || hashTags[i].length <= minLength
-      || hashTags[i].length >= maxLength) {
-      addStyleErrorForField();
+      || hashTags[i].length <= MIN_SYMBOL
+      || hashTags[i].length >= MAX_SYMBOL) {
       event.preventDefault();
+      addStyleErrorForField();
       break;
     }
     addStyleErrorForField(resetStyleError);
