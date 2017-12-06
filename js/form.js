@@ -3,7 +3,6 @@
   var HIDDEN_CLASS = 'hidden';
   var ESC_KEY = 27;
   var ENTER_KEY = 13;
-
   var filtersContainer = document.querySelector('.upload-effect-controls');
   var hashTagsField = document.querySelector('.upload-form-hashtags');
   var formSubmit = document.querySelector('.upload-form-submit');
