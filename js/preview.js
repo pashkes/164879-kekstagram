@@ -1,37 +1,54 @@
 'use strict';
 
 (function () {
-  /*
-   * Создание дом нод для списка комментариев
-   */
-  var commentsDOMCreate = function (comments, item) {
-    for (var j = 0; j < comments.commentsData.length; j++) {
-      var commentsElement = item.querySelectorAll('.picture-comments')[0];
-      var cloneComments = commentsElement.cloneNode(true);
-      cloneComments.textContent = comments.commentsData[j];
-      item.querySelector('.picture-stats').insertBefore(cloneComments, item.querySelector('.picture-likes'));
+  var overlay = document.querySelector('.gallery-overlay');
+  var HIDDEN_CLASS = 'hidden';
+  var ESC_KEY = 27;
+  var ENTER_KEY = 13;
+  var previewPicture = overlay.querySelector('.gallery-overlay-image');
+  var likes = overlay.querySelector('.likes-count');
+  var commentsCount = overlay.querySelector('.comments-count');
+  var getRangeRandomNumbers = function (min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  };
+  var removeOverlayClass = function () {
+    overlay.classList.add(HIDDEN_CLASS);
+  };
+  window.preview = {
+    getDataPreview: function (dataArray) {
+      previewPicture.src = dataArray[0].url;
+      likes.textContent = Math.round(getRangeRandomNumbers(15, 200)).toString();
+      commentsCount.textContent = dataArray[0].commentsData.length.toString();
+    },
+    addHandlerForClickOnPicture: function () {
+      var container = document.querySelector('.pictures');
+      container.addEventListener('click', renderBigPicture);
     }
-    commentsElement.remove();
   };
-  /*
-   * Создание миниатюр для галереи
-   */
-  var createDOMElements = function (dataPhoto) {
-    var fragment = document.createDocumentFragment();
-    var templateItem = document.getElementById('picture-template').content.querySelector('.picture');
-    for (var i = 0; i < dataPhoto.length; i++) {
-      var itemElement = templateItem.cloneNode(true);
-      itemElement.href = dataPhoto[i].url;
-      itemElement.querySelector('img').src = dataPhoto[i].url;
-      itemElement.querySelector('.picture-likes').textContent = dataPhoto[i].likes;
-      commentsDOMCreate(dataPhoto[i], itemElement);
-      fragment.appendChild(itemElement);
+  var addHandlerForClosePicture = function () {
+    var closeButton = document.querySelector('.gallery-overlay-close');
+    closeButton.addEventListener('click', removeOverlayClass);
+    document.addEventListener('keydown', checkKeyDown);
+  };
+  var renderBigPicture = function (event) {
+    event.preventDefault();
+    var currentElement = event.target.closest('.picture');
+    if (!currentElement) {
+      return;
     }
-    return fragment;
+    var srcPicture = currentElement.querySelector('img').src;
+    var mainPicture = overlay.querySelector('.gallery-overlay-image');
+    var likesCount = currentElement.querySelector('.picture-likes').textContent;
+    var commentCount = currentElement.querySelectorAll('.picture-comments').length;
+    overlay.querySelector('.likes-count').textContent = likesCount;
+    mainPicture.src = srcPicture;
+    overlay.querySelector('.comments-count').textContent = commentCount.toString();
+    overlay.classList.remove(HIDDEN_CLASS);
+    addHandlerForClosePicture();
   };
-  var renderPreview = function (dataHTML) {
-    var pictures = document.querySelector('.pictures');
-    pictures.appendChild(createDOMElements(dataHTML));
+  var checkKeyDown = function (event) {
+    if ((event.keyCode === ESC_KEY) || (event.keyCode === ENTER_KEY)) {
+      removeOverlayClass();
+    }
   };
-  renderPreview(window.data.getPhotoData());
 })();
