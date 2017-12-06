@@ -8,21 +8,19 @@
   var previewPicture = overlay.querySelector('.gallery-overlay-image');
   var likes = overlay.querySelector('.likes-count');
   var commentsCount = overlay.querySelector('.comments-count');
-  var getRangeRandomNumbers = function (min, max) {
-    return Math.round(Math.random() * (max - min) + min);
-  };
+
   var removeOverlayClass = function () {
     overlay.classList.add(HIDDEN_CLASS);
   };
   window.preview = {
-    getDataPreview: function (dataArray) {
+    renderBigPicture: function (dataArray) {
       previewPicture.src = dataArray[0].url;
-      likes.textContent = Math.round(getRangeRandomNumbers(15, 200)).toString();
+      likes.textContent = Math.round(window.data.getRangeRandomNumbers(15, 200)).toString();
       commentsCount.textContent = dataArray[0].commentsData.length.toString();
     },
     addHandlerForClickOnPicture: function () {
       var container = document.querySelector('.pictures');
-      container.addEventListener('click', renderBigPicture);
+      container.addEventListener('click', getDataPreview);
     }
   };
   var addHandlerForClosePicture = function () {
@@ -30,7 +28,7 @@
     closeButton.addEventListener('click', removeOverlayClass);
     document.addEventListener('keydown', checkKeyDown);
   };
-  var renderBigPicture = function (event) {
+  var getDataPreview = function (event) {
     event.preventDefault();
     var currentElement = event.target.closest('.picture');
     if (!currentElement) {

@@ -13,17 +13,17 @@
   var PATCH_TO_PHOTOS = 'photos/';
   var FILE_EXTENSION = '.jpg';
   var dataObjects = [];
-  var getRangeRandomNumbers = function (min, max) {
-    return Math.round(Math.random() * (max - min) + min);
-  };
   window.data = {
+    getRangeRandomNumbers: function (min, max) {
+      return Math.round(Math.random() * (max - min) + min);
+    },
     getPhotoData: function () {
       for (var i = 0; i < GALLERY_SIZE; i++) {
-        var firstCommentIndex = getRangeRandomNumbers(0, Math.ceil(MOCK_COMMENTS_DATA.length - 1) / 2);
-        var secondCommentIndex = getRangeRandomNumbers(Math.ceil((MOCK_COMMENTS_DATA.length - 1) / 2), MOCK_COMMENTS_DATA.length - 1);
+        var firstCommentIndex = window.data.getRangeRandomNumbers(0, Math.ceil(MOCK_COMMENTS_DATA.length - 1) / 2);
+        var secondCommentIndex = window.data.getRangeRandomNumbers(Math.ceil((MOCK_COMMENTS_DATA.length - 1) / 2), MOCK_COMMENTS_DATA.length - 1);
         dataObjects[i] = {
           url: PATCH_TO_PHOTOS + (i + 1) + FILE_EXTENSION,
-          likes: getRangeRandomNumbers(15, 200),
+          likes: window.data.getRangeRandomNumbers(15, 200),
           commentsData: [
             MOCK_COMMENTS_DATA[firstCommentIndex],
             MOCK_COMMENTS_DATA[secondCommentIndex]

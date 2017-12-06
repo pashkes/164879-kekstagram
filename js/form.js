@@ -12,14 +12,6 @@
   var resizeControls = document.querySelector('.upload-resize-controls');
 
   /**
-   * Добавление обработчика на изменения поля загрузки фото
-   */
-  var addHandlerUploadPhoto = function () {
-    var areaUploadPicture = document.querySelector('.upload-input');
-    areaUploadPicture.addEventListener('change', showUploadOverlay);
-  };
-
-  /**
    * Показать попап настройки загруженного изображения
    * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
    */
@@ -32,6 +24,14 @@
     addHandlerCheckValidHashTagsFocus();
     resetWhenShipped();
     checkForFormErrors();
+  };
+  /*
+   *
+   * Добавление обработчика на изменения поля загрузки фото
+   */
+  var addHandlerUploadPhoto = function () {
+    var areaUploadPicture = document.querySelector('.upload-input');
+    areaUploadPicture.addEventListener('change', showUploadOverlay);
   };
 
   var hideUploadOverlay = function () {
