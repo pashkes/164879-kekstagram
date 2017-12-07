@@ -267,4 +267,21 @@
     hashTagsField.value = '';
     message.value = '';
   };
+
+  var line = document.querySelector('.upload-effect-level-line');
+
+  var lineValue = line.querySelector('.upload-effect-level-val');
+  var pin = line.querySelector('.upload-effect-level-pin');
+  var inputSlider = document.querySelector('.upload-effect-level-value');
+
+
+  pin.addEventListener('mousedown', function (ev) {
+    var lineWidth = line.offsetWidth;
+    var startX = ev.clientX;
+    document.addEventListener('mousemove', function (e) {
+      var shift = startX - e.clientX;
+      pin.style.left = (startX - shift) + '%';
+      console.log(lineWidth);
+    });
+  });
 })();
