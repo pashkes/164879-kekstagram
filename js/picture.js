@@ -12,6 +12,7 @@
     }
     commentsElement.remove();
   };
+
   var createDOMElements = function (dataPhoto) {
     var fragment = document.createDocumentFragment();
     var template = document.querySelector('#picture-template');
@@ -26,8 +27,9 @@
     }
     return fragment;
   };
+
   window.picture = {
-    renderingThumbnail: function (DOMNodes) {
+    renderThumbnail: function (DOMNodes) {
       thumbnail.appendChild(createDOMElements(DOMNodes));
     }
   };

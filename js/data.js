@@ -13,6 +13,7 @@
   var PATCH_TO_PHOTOS = 'photos/';
   var FILE_EXTENSION = '.jpg';
   var dataObjects = [];
+
   window.data = {
     getRangeRandomNumbers: function (min, max) {
       return Math.round(Math.random() * (max - min) + min);

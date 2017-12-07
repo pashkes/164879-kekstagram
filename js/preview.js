@@ -12,6 +12,7 @@
   var removeOverlayClass = function () {
     overlay.classList.add(HIDDEN_CLASS);
   };
+
   window.preview = {
     renderBigPicture: function (dataArray) {
       previewPicture.src = dataArray[0].url;
@@ -23,11 +24,13 @@
       container.addEventListener('click', getDataPreview);
     }
   };
+
   var addHandlerForClosePicture = function () {
     var closeButton = document.querySelector('.gallery-overlay-close');
     closeButton.addEventListener('click', removeOverlayClass);
     document.addEventListener('keydown', checkKeyDown);
   };
+
   var getDataPreview = function (event) {
     event.preventDefault();
     var currentElement = event.target.closest('.picture');
@@ -44,6 +47,7 @@
     overlay.classList.remove(HIDDEN_CLASS);
     addHandlerForClosePicture();
   };
+
   var checkKeyDown = function (event) {
     if ((event.keyCode === ESC_KEY) || (event.keyCode === ENTER_KEY)) {
       removeOverlayClass();
