@@ -287,9 +287,11 @@
   var MAX_VALUE = 100;
   var MIN_VALUE = 0;
   var fieldDefault = 20;
+
   var getEffectValue = function (value, maxValueFilter) {
     return (maxValueFilter - (value * maxValueFilter / MAX_VALUE)).toFixed(2);
   };
+
   var dragPin = function () {
     pin.addEventListener('mousedown', function () {
       document.addEventListener('mousemove', pinShift);
@@ -321,9 +323,11 @@
     }
     setFilterStyle();
   };
+
   var showSlider = function () {
     lineContainer.classList.remove('hidden');
   };
+
   var hiddenSlider = function () {
     lineContainer.classList.add('hidden');
   };
