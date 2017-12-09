@@ -101,7 +101,7 @@
   };
   renderGallery();
 
-  /*
+  /**
    * Добавление бработчиков которые нужны внутри попапа
    */
   var addHandlerForClosedState = function () {
@@ -110,7 +110,7 @@
     document.addEventListener('keydown', hideWhenKeyDownEsc);
   };
 
-  /*
+  /**
    * Удаление обработчиков события для кнопки закрытия попапа и для документа
    */
   var removeClickCloseUpload = function () {
@@ -130,7 +130,7 @@
 
   /*
    * При нажатии ентер сбрасывать все значения, удалять обработчики которые нужны внутри попапа
-    * скрывать попап
+   * скрывать попап
    */
   var hideWhenKeyDownEnter = function (event) {
     if (event.keyCode === ENTER_KEY) {
@@ -288,6 +288,12 @@
   var MIN_VALUE = 0;
   var fieldDefault = 20;
 
+  /*
+   *
+   * @param value - текущее значение поля фильтра
+   * @param maxValueFilter - максимальное значение для выбранного фильтра
+   * @returns {string}
+   */
   var getEffectValue = function (value, maxValueFilter) {
     return (maxValueFilter - (value * maxValueFilter / MAX_VALUE)).toFixed(2);
   };
@@ -305,12 +311,17 @@
     document.addEventListener('mouseup', removeHandlerMovePin);
   };
 
-  var movePin = function (e) {
+  /*
+   * Получаем стартовые координаты мыши по оси х
+   * Получаем смещение пина относительно минимального значения
+   * Проверяем смещение пина в диапазоне от 0 - 100
+   * Применяем текущее значение пина для фото
+   */
+  var movePin = function (event) {
     var lineWidth = line.offsetWidth;
-    var startX = e.clientX;
+    var startX = event.clientX;
     var offsetLeft = mainLine.getBoundingClientRect().left;
-    var shiftOnClick = startX - e.clientX;
-    var shift = Math.floor((startX - shiftOnClick - offsetLeft) * 100 / lineWidth);
+    var shift = Math.floor((startX - offsetLeft) * 100 / lineWidth);
     var shiftString = shift + PERCENT_SYMBOL;
     if (shift >= MAX_VALUE) {
       pin.style.lef = MAX_VALUE;
@@ -336,6 +347,10 @@
     lineContainer.classList.add('hidden');
   };
 
+  /**
+   * Проверяем наличие последнего класса в фото
+   * Если совпало применять фильтры
+   */
   var setFilterStyle = function () {
     var imgList = imgPreview.classList;
     switch (imgList[imgList.length - 1]) {
@@ -357,6 +372,11 @@
     }
   };
 
+  /**
+   * Сброс стилей фильтра для фото
+   * Сброс поля значения фильтра до значение по умолчанию
+   * Сброс слайдера до значения по умолчанию
+   */
   var resetFilter = function () {
     imgPreview.style = '';
     sliderValue = fieldDefault;
