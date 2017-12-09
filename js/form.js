@@ -24,7 +24,7 @@
     addHandlerCheckValidHashTagsFocus();
     resetWhenShipped();
     checkForFormErrors();
-    dragPin();
+    addHandlerMovePin();
   };
   /*
    *
@@ -292,16 +292,20 @@
     return (maxValueFilter - (value * maxValueFilter / MAX_VALUE)).toFixed(2);
   };
 
-  var dragPin = function () {
-    pin.addEventListener('mousedown', function () {
-      document.addEventListener('mousemove', pinShift);
-      document.addEventListener('mouseup', function () {
-        document.removeEventListener('mousemove', pinShift);
-      });
-    });
+  var removeHandlerMovePin = function () {
+    document.removeEventListener('mousemove', movePin);
   };
 
-  var pinShift = function (e) {
+  var addHandlerMovePin = function () {
+    pin.addEventListener('mousedown', addHandlerForMouse);
+  };
+
+  var addHandlerForMouse = function () {
+    document.addEventListener('mousemove', movePin);
+    document.addEventListener('mouseup', removeHandlerMovePin);
+  };
+
+  var movePin = function (e) {
     var lineWidth = line.offsetWidth;
     var startX = e.clientX;
     var offsetLeft = mainLine.getBoundingClientRect().left;
