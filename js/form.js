@@ -167,7 +167,7 @@
     imgPreview.classList.add(currentFilterName);
     resetFilter();
     if (targetElement.htmlFor === 'upload-effect-none') {
-      hiddenSlider();
+      hideSlider();
     } else {
       showSlider();
     }
@@ -286,7 +286,7 @@
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
   var MIN_VALUE = 0;
-  var fieldDefault = 20;
+  var FIELD_DEFAULT = 20;
 
   /*
    *
@@ -343,7 +343,7 @@
     lineContainer.classList.remove('hidden');
   };
 
-  var hiddenSlider = function () {
+  var hideSlider = function () {
     lineContainer.classList.add('hidden');
   };
 
@@ -379,9 +379,9 @@
    */
   var resetFilter = function () {
     imgPreview.style = '';
-    sliderValue = fieldDefault;
-    pin.style.left = fieldDefault + PERCENT_SYMBOL;
-    lineValue.style.width = fieldDefault + PERCENT_SYMBOL;
+    sliderValue = FIELD_DEFAULT;
+    pin.style.left = FIELD_DEFAULT + PERCENT_SYMBOL;
+    lineValue.style.width = FIELD_DEFAULT + PERCENT_SYMBOL;
   };
 
 })();
