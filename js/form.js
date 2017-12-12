@@ -9,6 +9,7 @@
   var imgPreview = document.querySelector('.effect-image-preview');
   var uploadOverlay = document.querySelector('.upload-overlay');
   var closeButton = document.querySelector('.upload-form-cancel');
+  var zoomValue = document.querySelector('.upload-resize-controls-value');
   var resizeControls = document.querySelector('.upload-resize-controls');
 
   /**
@@ -16,15 +17,16 @@
    * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
    */
   var showUploadOverlay = function () {
-    uploadOverlay.classList.remove(HIDDEN_CLASS);
     addHandlerForClosedState();
     addFocusHandlerCommentsField();
     addFilterSelector();
-    zoomTheImage();
     addHandlerCheckValidHashTagsFocus();
     resetWhenShipped();
     checkForFormErrors();
     addHandlerMovePin();
+    addHandlerToggleZoom();
+    window.initializeScale(resizeControls, setImgZoom);
+    uploadOverlay.classList.remove(HIDDEN_CLASS);
   };
   /*
    *
@@ -38,45 +40,32 @@
   var hideUploadOverlay = function () {
     uploadOverlay.classList.add(HIDDEN_CLASS);
     resetFilter();
+    removeFilter();
   };
 
   /*
-   * При клике на "+/-" увеличивать/уменьшать значени поля зума
-   * В зависимости от значения внутри поля значения зума вызывывать функции которая присваивает картинке
-   * текущее значение зума
-   */
-  var handlerResizeButton = function (event) {
-    var STEP_ZOOM = 25;
-    var MIN_ZOOM = STEP_ZOOM;
-    var MAX_ZOOM = 100;
-    var PERCENT_SYMBOL = '%';
-    var zoomOut = event.target.closest('.upload-resize-controls-button-dec');
-    var zoomIn = event.target.closest('.upload-resize-controls-button-inc');
-    var zoomValue = resizeControls.querySelector('.upload-resize-controls-value');
-    var currentValueZoom = parseInt(zoomValue.value, 10);
-    if (zoomOut) {
-      if (currentValueZoom <= MIN_ZOOM || currentValueZoom > MAX_ZOOM) {
-        return;
-      }
-      currentValueZoom -= STEP_ZOOM;
-      zoomValue.value = currentValueZoom + PERCENT_SYMBOL;
-      setImgZoom(currentValueZoom, MAX_ZOOM);
-    }
-    if (zoomIn) {
-      if (currentValueZoom < MIN_ZOOM || currentValueZoom >= MAX_ZOOM) {
-        return;
-      }
-      currentValueZoom += STEP_ZOOM;
-      zoomValue.value = currentValueZoom + PERCENT_SYMBOL;
-      setImgZoom(currentValueZoom, MAX_ZOOM);
-    }
+  * Callback функция для изменение масштаба картанки
+  * Присвоение значение зума для картинки
+  */
+  var setImgZoom = function (value) {
+    var MAX_VALUE = 100;
+    imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
+  };
+
+  var zoomToggle = function () {
+    window.initializeScale(resizeControls, setImgZoom);
+  };
+
+  var addHandlerToggleZoom = function () {
+    resizeControls.addEventListener('click', zoomToggle);
   };
 
   /**
-   * Добавление обработчика клика для кнопок зума
+   * Сбросить зумм для картинки по умолчанию
    */
-  var zoomTheImage = function () {
-    resizeControls.addEventListener('click', handlerResizeButton);
+  var resetZoomImgOnClosing = function () {
+    imgPreview.style.transform = 'scale(1)';
+    zoomValue.value = MAX_VALUE + '%';
   };
 
   /**
@@ -96,6 +85,7 @@
   var checkForFormErrors = function () {
     formSubmit.addEventListener('click', checkValidHashTags);
   };
+
   var renderGallery = function () {
     addHandlerUploadPhoto();
   };
@@ -156,13 +146,15 @@
    * Иначе добавить класс выбранного фильтра для изображения
    */
   var filterSelection = function (event) {
+    var listClass = imgPreview.classList;
+    var LAST_CLASS = listClass[listClass.length - 1];
     var targetElement = event.target.closest('.upload-effect-label');
+    var currentFilterName = targetElement.htmlFor.replace('upload-', '');
     if (!targetElement) {
       return;
     }
-    var currentFilterName = targetElement.htmlFor.replace('upload-', '');
     if (imgPreview.classList.length >= 2) {
-      imgPreview.classList.remove(imgPreview.classList[1]);
+      imgPreview.classList.remove(LAST_CLASS);
     }
     imgPreview.classList.add(currentFilterName);
     resetFilter();
@@ -184,7 +176,9 @@
    * Удаление текущего эффекта с изображения
    */
   var removeFilter = function () {
-    imgPreview.classList.remove(imgPreview.classList[1]);
+    var listClass = imgPreview.classList;
+    var LAST_CLASS = listClass[listClass.length - 1];
+    listClass.remove(LAST_CLASS);
   };
 
   /**
@@ -192,21 +186,6 @@
    */
   var removeFilterSelector = function () {
     filtersContainer.removeEventListener('click', filterSelection);
-  };
-
-  /*
-   * Присвоение значение зума для картинки
-   */
-  var setImgZoom = function (value, maxValue) {
-    var levelScale = value / maxValue;
-    imgPreview.style.transform = 'scale(' + levelScale + ')';
-  };
-
-  /**
-   * Сбросить зумм для картинки по умолчанию
-   */
-  var resetZoomImgOnClosing = function () {
-    imgPreview.style.transform = 'scale(1)';
   };
 
   /**
@@ -222,6 +201,7 @@
     resetValueField();
     removeClickCloseUpload();
     removeFilterSelector();
+    resetZoomImgOnClosing();
     hideUploadOverlay();
   };
 
@@ -321,7 +301,7 @@
     var lineWidth = line.offsetWidth;
     var startX = event.clientX;
     var offsetLeft = mainLine.getBoundingClientRect().left;
-    var shift = Math.floor((startX - offsetLeft) * 100 / lineWidth);
+    var shift = Math.floor((startX - offsetLeft) * MAX_VALUE / lineWidth);
     var shiftString = shift + PERCENT_SYMBOL;
     if (shift >= MAX_VALUE) {
       pin.style.lef = MAX_VALUE;
@@ -353,7 +333,8 @@
    */
   var setFilterStyle = function () {
     var imgList = imgPreview.classList;
-    switch (imgList[imgList.length - 1]) {
+    var lastClass = imgList[imgList.length - 1];
+    switch (lastClass) {
       case 'effect-chrome':
         imgPreview.style.filter = 'grayscale(' + getEffectValue(sliderValue, 1) + ')';
         break;
@@ -378,7 +359,7 @@
    * Сброс слайдера до значения по умолчанию
    */
   var resetFilter = function () {
-    imgPreview.style = '';
+    imgPreview.style.filter = '';
     sliderValue = FIELD_DEFAULT;
     pin.style.left = FIELD_DEFAULT + PERCENT_SYMBOL;
     lineValue.style.width = FIELD_DEFAULT + PERCENT_SYMBOL;
