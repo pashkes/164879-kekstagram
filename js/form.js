@@ -145,31 +145,24 @@
    * Если в изображения больше 2-х классов - удалить второй
    * Иначе добавить класс выбранного фильтра для изображения
    */
-  var filterSelection = function (event) {
-    var listClass = imgPreview.classList;
-    var LAST_CLASS = listClass[listClass.length - 1];
-    var targetElement = event.target.closest('.upload-effect-label');
-    var currentFilterName = targetElement.htmlFor.replace('upload-', '');
-    if (!targetElement) {
-      return;
-    }
-    if (imgPreview.classList.length >= 2) {
-      imgPreview.classList.remove(LAST_CLASS);
-    }
-    imgPreview.classList.add(currentFilterName);
-    resetFilter();
-    if (targetElement.htmlFor === 'upload-effect-none') {
-      hideSlider();
-    } else {
-      showSlider();
-    }
+
+
+  /*
+   * Добавить обработчик для выбора фильтров
+   */
+  var filterToggle = function (event) {
+    var element = event.target.closest('.upload-effect-label');
+    window.initializeFilter(element, resetFilter, sliderState);
+  };
+  var addFilterSelector = function () {
+    filtersContainer.addEventListener('click', filterToggle);
   };
 
   /**
-   * Добавить обработчик для выбора фильтров
+   * Удаление обработчика выбора фильтра
    */
-  var addFilterSelector = function () {
-    filtersContainer.addEventListener('click', filterSelection);
+  var removeFilterSelector = function () {
+    filtersContainer.removeEventListener('click', filterToggle);
   };
 
   /**
@@ -179,13 +172,6 @@
     var listClass = imgPreview.classList;
     var LAST_CLASS = listClass[listClass.length - 1];
     listClass.remove(LAST_CLASS);
-  };
-
-  /**
-   * Удаление обработчика выбора фильтра
-   */
-  var removeFilterSelector = function () {
-    filtersContainer.removeEventListener('click', filterSelection);
   };
 
   /**
@@ -319,12 +305,13 @@
     setFilterStyle();
   };
 
-  var showSlider = function () {
-    lineContainer.classList.remove('hidden');
-  };
-
-  var hideSlider = function () {
-    lineContainer.classList.add('hidden');
+  var sliderState = {
+    showSlider: function () {
+      lineContainer.classList.remove('hidden');
+    },
+    hideSlider: function () {
+      lineContainer.classList.add('hidden');
+    }
   };
 
   /**
