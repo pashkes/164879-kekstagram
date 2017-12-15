@@ -25,7 +25,7 @@
         dataObjects[i] = {
           url: PATCH_TO_PHOTOS + (i + 1) + FILE_EXTENSION,
           likes: window.data.getRangeRandomNumbers(15, 200),
-          commentsData: [
+          comment: [
             MOCK_COMMENTS_DATA[firstCommentIndex],
             MOCK_COMMENTS_DATA[secondCommentIndex]
           ]
