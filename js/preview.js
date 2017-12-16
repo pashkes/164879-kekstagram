@@ -17,7 +17,7 @@
     renderBigPicture: function (dataArray) {
       previewPicture.src = dataArray[0].url;
       likes.textContent = Math.round(window.data.getRangeRandomNumbers(15, 200)).toString();
-      commentsCount.textContent = dataArray[0].commentsData.length.toString();
+      commentsCount.textContent = dataArray[0].comments.length.toString();
     },
     addHandlerForClickOnPicture: function () {
       var container = document.querySelector('.pictures');

@@ -3,34 +3,31 @@
 (function () {
   var thumbnail = document.querySelector('.pictures');
 
-  var createCommentsDOM = function (comments, item) {
-    for (var j = 0; j < comments.commentsData.length; j++) {
-      var commentsElement = item.querySelectorAll('.picture-comments')[0];
+  var createCommentsDOM = function (element, node) {
+    for (var j = 0; j < element.comments.length; j++) {
+      var commentsElement = node.querySelectorAll('.picture-comments')[0];
       var cloneComments = commentsElement.cloneNode(true);
-      cloneComments.textContent = comments.commentsData[j];
-      item.querySelector('.picture-stats').insertBefore(cloneComments, item.querySelector('.picture-likes'));
+      cloneComments.textContent = element.comments[j];
+      node.querySelector('.picture-stats').insertBefore(cloneComments, node.querySelector('.picture-likes'));
     }
     commentsElement.remove();
   };
 
-  var createDOMElements = function (dataPhoto) {
-    var fragment = document.createDocumentFragment();
-    var template = document.querySelector('#picture-template');
-    var templateContent = template.content.querySelector('.picture');
-    for (var i = 0; i < dataPhoto.length; i++) {
-      var itemNodeElement = templateContent.cloneNode(true);
-      itemNodeElement.href = dataPhoto[i].url;
-      itemNodeElement.querySelector('img').src = dataPhoto[i].url;
-      itemNodeElement.querySelector('.picture-likes').textContent = dataPhoto[i].likes;
-      createCommentsDOM(dataPhoto[i], itemNodeElement);
-      fragment.appendChild(itemNodeElement);
+  window.picture = {
+    createDOMElements: function (dataPhoto) {
+      var fragment = document.createDocumentFragment();
+      var template = document.querySelector('#picture-template');
+      var templateContent = template.content.querySelector('.picture');
+      for (var i = 0; i < dataPhoto.length; i++) {
+        var itemNodeElement = templateContent.cloneNode(true);
+        itemNodeElement.href = dataPhoto[i].url;
+        itemNodeElement.querySelector('img').src = dataPhoto[i].url;
+        itemNodeElement.querySelector('.picture-likes').textContent = dataPhoto[i].likes;
+        createCommentsDOM(dataPhoto[i], itemNodeElement);
+        fragment.appendChild(itemNodeElement);
+      }
+      thumbnail.appendChild(fragment);
     }
-    return fragment;
   };
 
-  window.picture = {
-    renderThumbnail: function (DOMNodes) {
-      thumbnail.appendChild(createDOMElements(DOMNodes));
-    }
-  };
 })();

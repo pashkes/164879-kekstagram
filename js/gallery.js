@@ -1,7 +1,11 @@
 'use strict';
 
 (function () {
-  window.picture.renderThumbnail(window.data.getPhotoData());
-  window.preview.renderBigPicture(window.data.getPhotoData());
+  var successLoad = function (data) {
+    window.picture.createDOMElements(data);
+    window.preview.renderBigPicture(data);
+  };
+
+  window.backend.load(successLoad);
   window.preview.addHandlerForClickOnPicture();
 })();

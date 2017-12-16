@@ -11,6 +11,7 @@
   var closeButton = document.querySelector('.upload-form-cancel');
   var zoomValue = document.querySelector('.upload-resize-controls-value');
   var resizeControls = document.querySelector('.upload-resize-controls');
+  var form = document.querySelector('.upload-form');
 
   /**
    * Показать попап настройки загруженного изображения
@@ -41,6 +42,7 @@
     uploadOverlay.classList.add(HIDDEN_CLASS);
     resetFilter();
     removeFilter();
+    resetOnClose();
   };
 
   /*
@@ -79,7 +81,7 @@
    * Добавление общего сброса всех полей и значения при отправке формы
    */
   var resetWhenShipped = function () {
-    formSubmit.addEventListener('submit', totalResetOnClosing);
+    form.addEventListener('submit', handlerSaveData);
   };
 
   var checkForFormErrors = function () {
@@ -114,7 +116,7 @@
    */
   var hideWhenKeyDownEsc = function (event) {
     if (event.keyCode === ESC_KEY) {
-      totalResetOnClosing();
+      resetOnClose();
     }
   };
 
@@ -124,7 +126,7 @@
    */
   var hideWhenKeyDownEnter = function (event) {
     if (event.keyCode === ENTER_KEY) {
-      totalResetOnClosing();
+      resetOnClose();
     }
   };
 
@@ -181,7 +183,40 @@
    * Удаление обработчика события для выбора фильтров
    * Вызов функции закрытие попапа
    */
-  var totalResetOnClosing = function () {
+  var removeError = function (error) {
+    var TIME_WAIT = 5000;
+    setTimeout(function () {
+      error.remove();
+    }, TIME_WAIT);
+  };
+
+  var createErrorBlock = function (text) {
+    var fragment = document.createElement('div');
+    fragment.style = 'width: 300px; position: fixed; top: 50%; left: 50%; z-index: 2; text-align: center; transform: translate(-50%, -50%); min-height: 100px; padding: 20px; border-radius: 10px; background-color: #fff';
+    var message = document.createElement('p');
+    message.textContent = text;
+    message.style.fontSize = '20px';
+    message.style.fontWeight = 'bold';
+    message.style.color = '#000';
+    fragment.appendChild(message);
+    document.body.appendChild(fragment);
+    removeError(fragment);
+  };
+
+  var successFormSend = function () {
+    createErrorBlock('Форма успешно отправлена');
+    resetOnClose();
+  };
+
+  var errorFormSend = function (message) {
+    createErrorBlock(message);
+  };
+  var handlerSaveData = function (event) {
+    event.preventDefault();
+    window.backend.save(new FormData(form), successFormSend, errorFormSend);
+  };
+
+  var resetOnClose = function () {
     removeFilter();
     resetZoomImgOnClosing();
     resetValueField();
@@ -239,6 +274,7 @@
   var resetValueField = function () {
     var message = document.querySelector('.upload-form-description');
     hashTagsField.value = '';
+    hashTagsField.style = '';
     message.value = '';
   };
 
