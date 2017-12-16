@@ -42,7 +42,7 @@
     uploadOverlay.classList.add(HIDDEN_CLASS);
     resetFilter();
     removeFilter();
-    totalResetOnClosing();
+    resetOnClose();
   };
 
   /*
@@ -116,7 +116,7 @@
    */
   var hideWhenKeyDownEsc = function (event) {
     if (event.keyCode === ESC_KEY) {
-      totalResetOnClosing();
+      resetOnClose();
     }
   };
 
@@ -126,7 +126,7 @@
    */
   var hideWhenKeyDownEnter = function (event) {
     if (event.keyCode === ENTER_KEY) {
-      totalResetOnClosing();
+      resetOnClose();
     }
   };
 
@@ -205,7 +205,7 @@
 
   var successFormSend = function () {
     createErrorBlock('Форма успешно отправлена');
-    totalResetOnClosing();
+    resetOnClose();
   };
 
   var errorFormSend = function (message) {
@@ -216,7 +216,7 @@
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
 
-  var totalResetOnClosing = function () {
+  var resetOnClose = function () {
     removeFilter();
     resetZoomImgOnClosing();
     resetValueField();

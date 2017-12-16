@@ -3,12 +3,12 @@
 (function () {
   var thumbnail = document.querySelector('.pictures');
 
-  var createCommentsDOM = function (comments, item) {
-    for (var j = 0; j < comments.comments.length; j++) {
-      var commentsElement = item.querySelectorAll('.picture-comments')[0];
+  var createCommentsDOM = function (element, node) {
+    for (var j = 0; j < element.comments.length; j++) {
+      var commentsElement = node.querySelectorAll('.picture-comments')[0];
       var cloneComments = commentsElement.cloneNode(true);
-      cloneComments.textContent = comments.comments[j];
-      item.querySelector('.picture-stats').insertBefore(cloneComments, item.querySelector('.picture-likes'));
+      cloneComments.textContent = element.comments[j];
+      node.querySelector('.picture-stats').insertBefore(cloneComments, node.querySelector('.picture-likes'));
     }
     commentsElement.remove();
   };
