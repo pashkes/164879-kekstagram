@@ -11,6 +11,7 @@
   var closeButton = document.querySelector('.upload-form-cancel');
   var zoomValue = document.querySelector('.upload-resize-controls-value');
   var resizeControls = document.querySelector('.upload-resize-controls');
+  var form = document.querySelector('.upload-form');
 
   /**
    * Показать попап настройки загруженного изображения
@@ -181,8 +182,9 @@
    * Удаление обработчика события для выбора фильтров
    * Вызов функции закрытие попапа
    */
-
-  var totalResetOnClosing = function () {
+  var totalResetOnClosing = function (event) {
+    window.backend.save(new FormData(form));
+    event.preventDefault();
     removeFilter();
     resetZoomImgOnClosing();
     resetValueField();
