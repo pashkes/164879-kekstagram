@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.picture.renderThumbnail();
-  window.preview.renderBigPicture(window.data.getPhotoData());
+  window.backend.load(window.picture.createDOMElements);
+  window.backend.load(window.preview.renderBigPicture);
   window.preview.addHandlerForClickOnPicture();
 })();

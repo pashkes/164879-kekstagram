@@ -181,6 +181,7 @@
    * Удаление обработчика события для выбора фильтров
    * Вызов функции закрытие попапа
    */
+
   var totalResetOnClosing = function () {
     removeFilter();
     resetZoomImgOnClosing();
