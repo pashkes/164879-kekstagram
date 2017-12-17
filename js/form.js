@@ -12,12 +12,15 @@
   var closeButton = document.querySelector('.upload-form-cancel');
   var zoomValue = document.querySelector('.upload-resize-controls-value');
   var resizeControls = document.querySelector('.upload-resize-controls');
+  var areaUploadPicture = document.querySelector('.upload-input');
 
   /**
    * Показать попап настройки загруженного изображения
    * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
    */
+
   var showUploadOverlay = function () {
+    setSelectedPicture();
     addHandlerForClosedState();
     addFocusHandlerCommentsField();
     addFilterSelector();
@@ -34,12 +37,20 @@
     window.initializeScale(resizeControls, setImgZoom);
     uploadOverlay.classList.remove(HIDDEN_CLASS);
   };
+
+  var setSelectedPicture = function () {
+    var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
+    imgPreview.src = srcSelectImg;
+    var pre = document.querySelectorAll('.upload-effect-preview');
+    pre.forEach(function (t) {
+      t.style.backgroundImage = 'url(' + srcSelectImg + ')';
+    });
+  };
   /*
    *
    * Добавление обработчика на изменения поля загрузки фото
    */
   var addHandlerUploadPhoto = function () {
-    var areaUploadPicture = document.querySelector('.upload-input');
     areaUploadPicture.addEventListener('change', showUploadOverlay);
   };
 
@@ -285,7 +296,6 @@
   var lineValue = line.querySelector('.upload-effect-level-val');
   var sliderField = document.querySelector('.upload-effect-level-value');
   var lineContainer = document.querySelector('.upload-effect-level');
-  var sliderValue = sliderField.value;
   var mainLine = document.querySelector('.upload-effect-level-val');
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
@@ -359,19 +369,19 @@
     var lastClass = imgList[imgList.length - 1];
     switch (lastClass) {
       case 'effect-chrome':
-        imgPreview.style.filter = 'grayscale(' + getEffectValue(sliderValue, 1) + ')';
+        imgPreview.style.filter = 'grayscale(' + getEffectValue(sliderField.value, 1) + ')';
         break;
       case 'effect-sepia':
-        imgPreview.style.filter = 'sepia(' + getEffectValue(sliderValue, 1) + ')';
+        imgPreview.style.filter = 'sepia(' + getEffectValue(sliderField.value, 1) + ')';
         break;
       case 'effect-marvin':
-        imgPreview.style.filter = 'invert(' + getEffectValue(sliderValue, 100) + '%)';
+        imgPreview.style.filter = 'invert(' + getEffectValue(sliderField.value, 100) + '%)';
         break;
       case 'effect-phobos':
-        imgPreview.style.filter = 'blur(' + getEffectValue(sliderValue, 3) + 'px)';
+        imgPreview.style.filter = 'blur(' + getEffectValue(sliderField.value, 3) + 'px)';
         break;
       case 'effect-heat':
-        imgPreview.style.filter = 'brightness(' + getEffectValue(sliderValue, 3) + ')';
+        imgPreview.style.filter = 'brightness(' + getEffectValue(sliderField.value, 3) + ')';
         break;
     }
   };
