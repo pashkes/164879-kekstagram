@@ -3,6 +3,7 @@
   var HIDDEN_CLASS = 'hidden';
   var ESC_KEY = 27;
   var ENTER_KEY = 13;
+  var form = document.querySelector('.upload-form');
   var filtersContainer = document.querySelector('.upload-effect-controls');
   var hashTagsField = document.querySelector('.upload-form-hashtags');
   var formSubmit = document.querySelector('.upload-form-submit');
@@ -11,7 +12,6 @@
   var closeButton = document.querySelector('.upload-form-cancel');
   var zoomValue = document.querySelector('.upload-resize-controls-value');
   var resizeControls = document.querySelector('.upload-resize-controls');
-  var form = document.querySelector('.upload-form');
 
   /**
    * Показать попап настройки загруженного изображения
@@ -22,10 +22,15 @@
     addFocusHandlerCommentsField();
     addFilterSelector();
     addHandlerCheckValidHashTagsFocus();
-    resetWhenShipped();
+    saveDataForm();
     checkForFormErrors();
     addHandlerMovePin();
     addHandlerToggleZoom();
+    removeFilter();
+    sliderState.hideSlider();
+    resetZoomImgOnClosing();
+    resetValueField();
+    resetFilter();
     window.initializeScale(resizeControls, setImgZoom);
     uploadOverlay.classList.remove(HIDDEN_CLASS);
   };
@@ -40,9 +45,6 @@
 
   var hideUploadOverlay = function () {
     uploadOverlay.classList.add(HIDDEN_CLASS);
-    resetFilter();
-    removeFilter();
-    resetOnClose();
   };
 
   /*
@@ -80,8 +82,8 @@
   /**
    * Добавление общего сброса всех полей и значения при отправке формы
    */
-  var resetWhenShipped = function () {
-    form.addEventListener('submit', handlerSaveData);
+  var saveDataForm = function () {
+    form.addEventListener('submit', sendDataForm);
   };
 
   var checkForFormErrors = function () {
@@ -176,7 +178,7 @@
     listClass.remove(LAST_CLASS);
   };
 
-  /**
+  /*
    * Сброс параметров для картинки загрузки
    * Сброс фильтра, сброс уровня увеличения, сброс
    * Удаление обработчиков событие для кнопки закрытия
@@ -211,7 +213,7 @@
   var errorFormSend = function (message) {
     createErrorBlock(message);
   };
-  var handlerSaveData = function (event) {
+  var sendDataForm = function (event) {
     event.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
@@ -220,9 +222,9 @@
     removeFilter();
     resetZoomImgOnClosing();
     resetValueField();
+    resetFilter();
     removeClickCloseUpload();
     removeFilterSelector();
-    resetZoomImgOnClosing();
     hideUploadOverlay();
   };
 
@@ -327,16 +329,14 @@
     var shiftString = shift + PERCENT_SYMBOL;
     if (shift >= MAX_VALUE) {
       pin.style.lef = MAX_VALUE;
-      sliderValue = MAX_VALUE;
       lineValue.style.width = MAX_VALUE;
     } else if (shift <= MIN_VALUE) {
       pin.style.left = MIN_VALUE;
-      sliderValue = MIN_VALUE;
       lineValue.style.width = MIN_VALUE;
     } else {
       pin.style.left = shiftString;
       lineValue.style.width = shiftString;
-      sliderValue = shift;
+      sliderField.value = shift;
     }
     setFilterStyle();
   };
@@ -383,7 +383,7 @@
    */
   var resetFilter = function () {
     imgPreview.style.filter = '';
-    sliderValue = FIELD_DEFAULT;
+    sliderField.value = FIELD_DEFAULT;
     pin.style.left = FIELD_DEFAULT + PERCENT_SYMBOL;
     lineValue.style.width = FIELD_DEFAULT + PERCENT_SYMBOL;
   };
