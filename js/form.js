@@ -20,8 +20,8 @@
    */
 
   var showUploadOverlay = function () {
-    setSelectedPicture();
     addHandlerForClosedState();
+    setSelectedPicture();
     addFocusHandlerCommentsField();
     addFilterSelector();
     addHandlerCheckValidHashTagsFocus();
@@ -41,9 +41,9 @@
   var setSelectedPicture = function () {
     var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
     imgPreview.src = srcSelectImg;
-    var pre = document.querySelectorAll('.upload-effect-preview');
-    pre.forEach(function (t) {
-      t.style.backgroundImage = 'url(' + srcSelectImg + ')';
+    var thumbnails = document.querySelectorAll('.upload-effect-preview');
+    thumbnails.forEach(function (thumbnail) {
+      thumbnail.style.backgroundImage = 'url(' + srcSelectImg + ')';
     });
   };
   /*
