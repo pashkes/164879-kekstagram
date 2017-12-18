@@ -15,6 +15,9 @@
 
   window.picture = {
     createDOMElements: function (dataPhoto) {
+      while (thumbnail.hasChildNodes()) {
+        thumbnail.removeChild(thumbnail.firstChild);
+      }
       var fragment = document.createDocumentFragment();
       var template = document.querySelector('#picture-template');
       var templateContent = template.content.querySelector('.picture');
