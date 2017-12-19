@@ -274,22 +274,23 @@
     return outputValue.toFixed(2);
   };
 
-  var removeHandlerMovePin = function () {
-    document.removeEventListener('mousemove', movePin);
-  };
-
   var addHandlerMouseDown = function () {
-    pin.addEventListener('mousedown', addHandlerForMouse);
+    pin.addEventListener('mousedown', addHandlerMovePin);
   };
 
-  var addHandlerForMouse = function () {
+  var addHandlerMovePin = function () {
     document.addEventListener('mousemove', movePin);
     document.addEventListener('mouseup', removeHandlerMovePin);
   };
 
-  var removeHandlerMouseDown = function () {
-    document.removeEventListener('mousedown', addHandlerForMouse);
+  var removeHandlerMovePin = function () {
+    document.removeEventListener('mousemove', movePin);
   };
+
+  var removeHandlerMouseDown = function () {
+    document.removeEventListener('mousedown', addHandlerMovePin);
+  };
+
   /*
    * Получаем стартовые координаты мыши по оси х
    * Получаем смещение пина относительно минимального значения
