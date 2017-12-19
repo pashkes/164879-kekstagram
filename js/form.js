@@ -25,12 +25,9 @@
     addHandlerCheckValidHashTagsFocus();
     saveDataForm();
     checkForFormErrors();
-    addHandlerMovePin();
-    removeFilter();
     sliderState.hideSlider();
     resetZoomImgOnClosing();
     resetValueField();
-    resetFilter();
     uploadOverlay.classList.remove(window.util.className.HIDDEN);
   };
 
@@ -225,6 +222,7 @@
     var MAX_SYMBOL = 20;
     var FIRST_INDEX = 0;
     var MIN_SYMBOL = 1;
+    var NEXT = 1;
     var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
     if (hashTags[FIRST_INDEX] === '') {
@@ -235,7 +233,7 @@
         || hashTags[FIRST_INDEX] === ''
         || hashTags[i][FIRST_INDEX] !== '#'
         || hashTags[i] === ' '
-        || hashTags[i] === hashTags[i + 1]
+        || hashTags[i] === hashTags[i + NEXT]
         || hashTags[i].length <= MIN_SYMBOL
         || hashTags[i].length >= MAX_SYMBOL) {
         event.preventDefault();
@@ -268,9 +266,8 @@
   var pin = line.querySelector('.upload-effect-level-pin');
   var lineValue = line.querySelector('.upload-effect-level-val');
   var mainLine = line.querySelector('.upload-effect-level-val');
-  var lineContainer = line.querySelector('.upload-effect-level');
+  var lineContainer = document.querySelector('.upload-effect-level');
   var filterRadio = document.querySelector('.upload-effect-level-value');
-  var fieldValueShift;
 
   var getEffectValue = function (value, maxValueFilter) {
     var outputValue = maxValueFilter - (value * maxValueFilter / MAX_VALUE);
@@ -281,7 +278,7 @@
     document.removeEventListener('mousemove', movePin);
   };
 
-  var addHandlerMovePin = function () {
+  var addHandlerMouseDown = function () {
     pin.addEventListener('mousedown', addHandlerForMouse);
   };
 
@@ -290,6 +287,9 @@
     document.addEventListener('mouseup', removeHandlerMovePin);
   };
 
+  var removeHandlerMouseDown = function () {
+    document.removeEventListener('mousedown', addHandlerForMouse);
+  };
   /*
    * Получаем стартовые координаты мыши по оси х
    * Получаем смещение пина относительно минимального значения
@@ -318,10 +318,13 @@
 
   var sliderState = {
     showSlider: function () {
+      addHandlerMouseDown();
       lineContainer.classList.remove(window.util.className.HIDDEN);
     },
     hideSlider: function () {
       lineContainer.classList.add(window.util.className.HIDDEN);
+      removeHandlerMouseDown();
+      resetFilter();
     }
   };
 

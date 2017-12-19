@@ -20,16 +20,6 @@
     },
     className: {
       HIDDEN: 'hidden'
-    },
-    isEscEvent: function (evt, action) {
-      if (evt.keyCode === window.util.keyCode.ESC) {
-        action();
-      }
-    },
-    isEnterEvent: function (evt, action) {
-      if (evt.keyCode === window.util.keyCode.ENTER) {
-        action();
-      }
-    },
+    }
   };
 })();
