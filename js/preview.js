@@ -1,10 +1,10 @@
 'use strict';
 
 (function () {
-  var overlay = document.querySelector('.gallery-overlay');
   var HIDDEN_CLASS = 'hidden';
   var ESC_KEY = 27;
   var ENTER_KEY = 13;
+  var overlay = document.querySelector('.gallery-overlay');
   var previewPicture = overlay.querySelector('.gallery-overlay-image');
   var likes = overlay.querySelector('.likes-count');
   var commentsCount = overlay.querySelector('.comments-count');
@@ -14,10 +14,10 @@
   };
 
   window.preview = {
-    renderBigPicture: function (dataArray) {
-      previewPicture.src = dataArray[0].url;
+    renderBigPicture: function (dataComments) {
+      previewPicture.src = dataComments[0].url;
       likes.textContent = Math.round(window.data.getRangeRandomNumbers(15, 200)).toString();
-      commentsCount.textContent = dataArray[0].comments.length.toString();
+      commentsCount.textContent = dataComments[0].comments.length.toString();
     },
     addHandlerForClickOnPicture: function () {
       var container = document.querySelector('.pictures');

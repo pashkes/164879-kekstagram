@@ -8,7 +8,7 @@
   var filterTimeOut;
   var data;
 
-  var sort = function (item) {
+  var sorting = function (item) {
     var cloneData = data.slice(0);
     switch (item) {
       case 'popular':
@@ -38,7 +38,7 @@
     if (event.target.type !== 'radio') {
       return;
     }
-    debouce(sort, filter);
+    debouce(sorting, filter);
   };
 
   var debouce = function (func, value) {

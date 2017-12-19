@@ -165,19 +165,19 @@
   /*
    * Добавить обработчик для выбора фильтров
    */
-  var filterToggle = function (event) {
+  var filterSwitching = function (event) {
     var element = event.target.closest('.upload-effect-label');
     window.initializeFilter(element, resetFilter, sliderState);
   };
   var addFilterSelector = function () {
-    filtersContainer.addEventListener('click', filterToggle);
+    filtersContainer.addEventListener('click', filterSwitching);
   };
 
   /**
    * Удаление обработчика выбора фильтра
    */
   var removeFilterSelector = function () {
-    filtersContainer.removeEventListener('click', filterToggle);
+    filtersContainer.removeEventListener('click', filterSwitching);
   };
 
   /**
