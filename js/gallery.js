@@ -38,7 +38,7 @@
     if (event.target.type !== 'radio') {
       return;
     }
-    window.util.debouce(sorting);
+    window.util.debounc(sorting);
   };
 
   var successLoad = function (dataLoad) {

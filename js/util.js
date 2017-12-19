@@ -8,7 +8,7 @@
     getRangeRandomNumbers: function (min, max) {
       return Math.round(Math.random() * (max - min) + min);
     },
-    debouce: function (func) {
+    debounc: function (func) {
       if (lastTimeOut) {
         clearInterval(lastTimeOut);
       }
