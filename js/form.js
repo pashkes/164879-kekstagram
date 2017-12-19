@@ -28,14 +28,20 @@
     saveDataForm();
     checkForFormErrors();
     addHandlerMovePin();
-    addHandlerToggleZoom();
     removeFilter();
     sliderState.hideSlider();
     resetZoomImgOnClosing();
     resetValueField();
     resetFilter();
-    window.initializeScale(resizeControls, setImgZoom);
     uploadOverlay.classList.remove(HIDDEN_CLASS);
+  };
+  /*
+  * Callback функция для изменение масштаба картанки
+  * Присвоение значение зума для картинки
+  */
+  var setImgZoom = function (value) {
+    var MAX_VALUE = 100;
+    imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
   };
 
   var setSelectedPicture = function () {
@@ -58,22 +64,6 @@
     uploadOverlay.classList.add(HIDDEN_CLASS);
   };
 
-  /*
-  * Callback функция для изменение масштаба картанки
-  * Присвоение значение зума для картинки
-  */
-  var setImgZoom = function (value) {
-    var MAX_VALUE = 100;
-    imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
-  };
-
-  var zoomToggle = function () {
-    window.initializeScale(resizeControls, setImgZoom);
-  };
-
-  var addHandlerToggleZoom = function () {
-    resizeControls.addEventListener('click', zoomToggle);
-  };
 
   /**
    * Сбросить зумм для картинки по умолчанию
@@ -103,6 +93,7 @@
 
   var renderGallery = function () {
     addHandlerUploadPhoto();
+    window.initializeScale(resizeControls, setImgZoom);
   };
   renderGallery();
 
