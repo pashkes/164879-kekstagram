@@ -43,9 +43,9 @@
   var setSelectedPicture = function () {
     var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
     imgPreview.src = srcSelectImg;
-    thumbnailsFilter.forEach(function (thumbnail) {
-      thumbnail.style.backgroundImage = 'url(' + srcSelectImg + ')';
-    });
+    for (var i = 0; i < thumbnailsFilter.length; i++) {
+      thumbnailsFilter[i].style.backgroundImage = 'url(' + srcSelectImg + ')';
+    }
   };
 
   /*
