@@ -2,15 +2,16 @@
 
 (function () {
   var RANDOM_FACTOR = 0.5;
-  var DEBOUNCE_TIME = 500;
+
+  var visibility = '1';
   var filters = document.querySelector('.filters-inactive');
   var sorted;
-  var filterTimeOut;
   var data;
+  var filterOnClick;
 
-  var sorting = function (item) {
+  var sorting = function () {
     var cloneData = data.slice(0);
-    switch (item) {
+    switch (filterOnClick) {
       case 'popular':
         sorted = cloneData.sort(function (first, second) {
           return second.likes - first.likes;
@@ -33,28 +34,18 @@
   };
 
   var getFilterName = function (event) {
-    var filter = event.target.value;
-
+    filterOnClick = event.target.value;
     if (event.target.type !== 'radio') {
       return;
     }
-    debouce(sorting, filter);
-  };
-
-  var debouce = function (func, value) {
-    if (filterTimeOut) {
-      clearInterval(filterTimeOut);
-    }
-    filterTimeOut = setTimeout(function () {
-      func(value);
-    }, DEBOUNCE_TIME);
+    window.util.debouce(sorting);
   };
 
   var successLoad = function (dataLoad) {
     data = dataLoad.slice(0);
+    filters.style.opacity = visibility;
     window.picture.createDOMElements(data);
     window.preview.renderBigPicture(data);
-    filters.style.opacity = '1';
     filters.addEventListener('click', getFilterName);
   };
 

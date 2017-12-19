@@ -1,24 +1,22 @@
 'use strict';
 (function () {
-  var HIDDEN_CLASS = 'hidden';
-  var ESC_KEY = 27;
-  var ENTER_KEY = 13;
   var form = document.querySelector('.upload-form');
-  var filtersContainer = document.querySelector('.upload-effect-controls');
-  var hashTagsField = document.querySelector('.upload-form-hashtags');
-  var formSubmit = document.querySelector('.upload-form-submit');
-  var imgPreview = document.querySelector('.effect-image-preview');
-  var uploadOverlay = document.querySelector('.upload-overlay');
-  var closeButton = document.querySelector('.upload-form-cancel');
-  var zoomValue = document.querySelector('.upload-resize-controls-value');
-  var resizeControls = document.querySelector('.upload-resize-controls');
-  var areaUploadPicture = document.querySelector('.upload-input');
+  var filtersContainer = form.querySelector('.upload-effect-controls');
+  var hashTagsField = form.querySelector('.upload-form-hashtags');
+  var formSubmit = form.querySelector('.upload-form-submit');
+  var imgPreview = form.querySelector('.effect-image-preview');
+  var uploadOverlay = form.querySelector('.upload-overlay');
+  var closeButton = form.querySelector('.upload-form-cancel');
+  var zoomValue = form.querySelector('.upload-resize-controls-value');
+  var resizeControls = form.querySelector('.upload-resize-controls');
+  var areaUploadPicture = form.querySelector('.upload-input');
+  var thumbnailsFilter = form.querySelectorAll('.upload-effect-preview');
+  var comment = form.querySelector('.upload-form-description');
 
-  /**
+  /*
    * Показать попап настройки загруженного изображения
    * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
    */
-
   var showUploadOverlay = function () {
     addHandlerForClosedState();
     setSelectedPicture();
@@ -33,8 +31,9 @@
     resetZoomImgOnClosing();
     resetValueField();
     resetFilter();
-    uploadOverlay.classList.remove(HIDDEN_CLASS);
+    uploadOverlay.classList.remove(window.util.className.HIDDEN);
   };
+
   /*
   * Callback функция для изменение масштаба картанки
   * Присвоение значение зума для картинки
@@ -47,11 +46,11 @@
   var setSelectedPicture = function () {
     var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
     imgPreview.src = srcSelectImg;
-    var thumbnails = document.querySelectorAll('.upload-effect-preview');
-    thumbnails.forEach(function (thumbnail) {
+    thumbnailsFilter.forEach(function (thumbnail) {
       thumbnail.style.backgroundImage = 'url(' + srcSelectImg + ')';
     });
   };
+
   /*
    *
    * Добавление обработчика на изменения поля загрузки фото
@@ -61,11 +60,10 @@
   };
 
   var hideUploadOverlay = function () {
-    uploadOverlay.classList.add(HIDDEN_CLASS);
+    uploadOverlay.classList.add(window.util.className.HIDDEN);
   };
 
-
-  /**
+  /*
    * Сбросить зумм для картинки по умолчанию
    */
   var resetZoomImgOnClosing = function () {
@@ -73,14 +71,14 @@
     zoomValue.value = MAX_VALUE + '%';
   };
 
-  /**
+  /*
    * Добавление обработчика валидации хэш тегов при изменения значения
    */
   var addHandlerCheckValidHashTagsFocus = function () {
     hashTagsField.addEventListener('change', checkValidHashTags);
   };
 
-  /**
+  /*
    * Добавление общего сброса всех полей и значения при отправке формы
    */
   var saveDataForm = function () {
@@ -97,7 +95,7 @@
   };
   renderGallery();
 
-  /**
+  /*
    * Добавление бработчиков которые нужны внутри попапа
    */
   var addHandlerForClosedState = function () {
@@ -106,7 +104,7 @@
     document.addEventListener('keydown', hideWhenKeyDownEsc);
   };
 
-  /**
+  /*
    * Удаление обработчиков события для кнопки закрытия попапа и для документа
    */
   var removeClickCloseUpload = function () {
@@ -119,7 +117,7 @@
    * скрывать попап
    */
   var hideWhenKeyDownEsc = function (event) {
-    if (event.keyCode === ESC_KEY) {
+    if (event.keyCode === window.util.keyCode.ESC) {
       resetOnClose();
     }
   };
@@ -129,12 +127,12 @@
    * скрывать попап
    */
   var hideWhenKeyDownEnter = function (event) {
-    if (event.keyCode === ENTER_KEY) {
+    if (event.keyCode === window.util.keyCode.ENTER) {
       resetOnClose();
     }
   };
 
-  /**
+  /*
    * Если в фокусе - удалять обработчики закрытие попапа при нажатии эскейп
    * Если вышел с фокуса добавлять этот обработчик обратно
    */
@@ -143,15 +141,6 @@
     commentsField.addEventListener('focus', removeClickCloseUpload);
     commentsField.addEventListener('blur', addHandlerForClosedState);
   };
-
-  /*
-   * Выбор фильтра
-   * Если нажатие вне фильтра - выйти из функции
-   * Получить for для текущего элемента, убрать префикс
-   * Если в изображения больше 2-х классов - удалить второй
-   * Иначе добавить класс выбранного фильтра для изображения
-   */
-
 
   /*
    * Добавить обработчик для выбора фильтров
@@ -164,14 +153,14 @@
     filtersContainer.addEventListener('click', filterSwitching);
   };
 
-  /**
+  /*
    * Удаление обработчика выбора фильтра
    */
   var removeFilterSelector = function () {
     filtersContainer.removeEventListener('click', filterSwitching);
   };
 
-  /**
+  /*
    * Удаление текущего эффекта с изображения
    */
   var removeFilter = function () {
@@ -215,6 +204,7 @@
   var errorFormSend = function (message) {
     createErrorBlock(message);
   };
+
   var sendDataForm = function (event) {
     event.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
@@ -230,11 +220,6 @@
     hideUploadOverlay();
   };
 
-  /*
-   * Валидация списка хэш тегов
-   * Если не валидно добавлять стиль ошибки полю
-   * Иначе сбрасывать стиль ошибки
-   */
   var checkValidHashTags = function (event) {
     var MAX_AMOUNT = 5;
     var MAX_SYMBOL = 20;
@@ -261,46 +246,35 @@
     }
   };
 
-  /*
-   * Добавление красной тени
-   * Если resetStyle передан в метод сбросывать красную тень
-   */
   var addStyleErrorForField = function (resetStyle) {
+    var defaultValue = 'none';
     hashTagsField.style.boxShadow = '0 0 2px 2px red';
     if (resetStyle) {
-      hashTagsField.style.boxShadow = 'none';
+      hashTagsField.style.boxShadow = defaultValue;
     }
   };
 
-  /**
-   * Сброс полей формы
-   */
   var resetValueField = function () {
-    var message = document.querySelector('.upload-form-description');
     hashTagsField.value = '';
     hashTagsField.style = '';
-    message.value = '';
+    comment.value = '';
   };
 
-  var line = document.querySelector('.upload-effect-level-line');
-  var pin = line.querySelector('.upload-effect-level-pin');
-  var lineValue = line.querySelector('.upload-effect-level-val');
-  var sliderField = document.querySelector('.upload-effect-level-value');
-  var lineContainer = document.querySelector('.upload-effect-level');
-  var mainLine = document.querySelector('.upload-effect-level-val');
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
   var MIN_VALUE = 0;
   var FIELD_DEFAULT = 20;
+  var line = document.querySelector('.upload-effect-level-line');
+  var pin = line.querySelector('.upload-effect-level-pin');
+  var lineValue = line.querySelector('.upload-effect-level-val');
+  var mainLine = line.querySelector('.upload-effect-level-val');
+  var lineContainer = line.querySelector('.upload-effect-level');
+  var filterRadio = document.querySelector('.upload-effect-level-value');
+  var fieldValueShift;
 
-  /*
-   *
-   * @param value - текущее значение поля фильтра
-   * @param maxValueFilter - максимальное значение для выбранного фильтра
-   * @returns {string}
-   */
   var getEffectValue = function (value, maxValueFilter) {
-    return (maxValueFilter - (value * maxValueFilter / MAX_VALUE)).toFixed(2);
+    var outputValue = maxValueFilter - (value * maxValueFilter / MAX_VALUE);
+    return outputValue.toFixed(2);
   };
 
   var removeHandlerMovePin = function () {
@@ -337,17 +311,17 @@
     } else {
       pin.style.left = shiftString;
       lineValue.style.width = shiftString;
-      sliderField.value = shift;
+      filterRadio.value = shift;
     }
     setFilterStyle();
   };
 
   var sliderState = {
     showSlider: function () {
-      lineContainer.classList.remove('hidden');
+      lineContainer.classList.remove(window.util.className.HIDDEN);
     },
     hideSlider: function () {
-      lineContainer.classList.add('hidden');
+      lineContainer.classList.add(window.util.className.HIDDEN);
     }
   };
 
@@ -360,19 +334,19 @@
     var lastClass = imgList[imgList.length - 1];
     switch (lastClass) {
       case 'effect-chrome':
-        imgPreview.style.filter = 'grayscale(' + getEffectValue(sliderField.value, 1) + ')';
+        imgPreview.style.filter = 'grayscale(' + getEffectValue(filterRadio.value, 1) + ')';
         break;
       case 'effect-sepia':
-        imgPreview.style.filter = 'sepia(' + getEffectValue(sliderField.value, 1) + ')';
+        imgPreview.style.filter = 'sepia(' + getEffectValue(filterRadio.value, 1) + ')';
         break;
       case 'effect-marvin':
-        imgPreview.style.filter = 'invert(' + getEffectValue(sliderField.value, 100) + '%)';
+        imgPreview.style.filter = 'invert(' + getEffectValue(filterRadio.value, 100) + '%)';
         break;
       case 'effect-phobos':
-        imgPreview.style.filter = 'blur(' + getEffectValue(sliderField.value, 3) + 'px)';
+        imgPreview.style.filter = 'blur(' + getEffectValue(filterRadio.value, 3) + 'px)';
         break;
       case 'effect-heat':
-        imgPreview.style.filter = 'brightness(' + getEffectValue(sliderField.value, 3) + ')';
+        imgPreview.style.filter = 'brightness(' + getEffectValue(filterRadio.value, 3) + ')';
         break;
     }
   };
@@ -384,7 +358,7 @@
    */
   var resetFilter = function () {
     imgPreview.style.filter = '';
-    sliderField.value = FIELD_DEFAULT;
+    filterRadio.value = FIELD_DEFAULT;
     pin.style.left = FIELD_DEFAULT + PERCENT_SYMBOL;
     lineValue.style.width = FIELD_DEFAULT + PERCENT_SYMBOL;
   };

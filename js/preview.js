@@ -1,22 +1,19 @@
 'use strict';
 
 (function () {
-  var HIDDEN_CLASS = 'hidden';
-  var ESC_KEY = 27;
-  var ENTER_KEY = 13;
   var overlay = document.querySelector('.gallery-overlay');
   var previewPicture = overlay.querySelector('.gallery-overlay-image');
   var likes = overlay.querySelector('.likes-count');
   var commentsCount = overlay.querySelector('.comments-count');
 
   var removeOverlayClass = function () {
-    overlay.classList.add(HIDDEN_CLASS);
+    overlay.classList.add(window.util.className.HIDDEN);
   };
 
   window.preview = {
     renderBigPicture: function (dataComments) {
       previewPicture.src = dataComments[0].url;
-      likes.textContent = Math.round(window.data.getRangeRandomNumbers(15, 200)).toString();
+      likes.textContent = Math.round(window.util.getRangeRandomNumbers(15, 200)).toString();
       commentsCount.textContent = dataComments[0].comments.length.toString();
     },
     addHandlerForClickOnPicture: function () {
@@ -44,12 +41,12 @@
     overlay.querySelector('.likes-count').textContent = likesCount;
     mainPicture.src = srcPicture;
     overlay.querySelector('.comments-count').textContent = commentCount.toString();
-    overlay.classList.remove(HIDDEN_CLASS);
+    overlay.classList.remove(window.util.className.HIDDEN);
     addHandlerForClosePicture();
   };
 
   var checkKeyDown = function (event) {
-    if ((event.keyCode === ESC_KEY) || (event.keyCode === ENTER_KEY)) {
+    if ((event.keyCode === window.util.keyCode.ESC) || (event.keyCode === window.util.keyCode.ENTER)) {
       removeOverlayClass();
     }
   };
