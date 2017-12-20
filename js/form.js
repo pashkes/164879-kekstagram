@@ -64,7 +64,6 @@
   * Присвоение значение зума для картинки
   */
   var setImgZoom = function (value) {
-    var MAX_VALUE = 100;
     imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
   };
 
