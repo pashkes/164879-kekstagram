@@ -31,7 +31,7 @@
   };
 
   var closeOnEsc = function (event) {
-    window.util.eventKey.esc(event, closePopup);
+    window.util.eventKey.escape(event, closePopup);
   };
 
   var closeOnEnter = function (event) {

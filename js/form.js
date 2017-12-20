@@ -1,5 +1,14 @@
 'use strict';
 (function () {
+  var MAX_AMOUNT = 5;
+  var MAX_SYMBOL = 20;
+  var FIRST_INDEX = 0;
+  var MIN_SYMBOL = 1;
+  var NEXT = 1;
+  var PERCENT_SYMBOL = '%';
+  var MAX_VALUE = 100;
+  var MIN_VALUE = 0;
+  var FIELD_DEFAULT = 20;
   var form = document.querySelector('.upload-form');
   var filtersContainer = form.querySelector('.upload-effect-controls');
   var hashTagsField = form.querySelector('.upload-form-hashtags');
@@ -12,6 +21,12 @@
   var areaUploadPicture = form.querySelector('.upload-input');
   var thumbnailsFilter = form.querySelectorAll('.upload-effect-preview');
   var comment = form.querySelector('.upload-form-description');
+  var line = document.querySelector('.upload-effect-level-line');
+  var pin = line.querySelector('.upload-effect-level-pin');
+  var lineValue = line.querySelector('.upload-effect-level-val');
+  var mainLine = line.querySelector('.upload-effect-level-val');
+  var lineContainer = document.querySelector('.upload-effect-level');
+  var filterRadio = document.querySelector('.upload-effect-level-value');
 
   var formState = {
     close: function () {
@@ -116,7 +131,7 @@
    * скрывать попап
    */
   var hideWhenKeyDownEsc = function (event) {
-    window.util.eventKey.esc(event, formState.close);
+    window.util.eventKey.escape(event, formState.close);
   };
 
   /*
@@ -206,11 +221,6 @@
   };
 
   var checkValidHashTags = function (event) {
-    var MAX_AMOUNT = 5;
-    var MAX_SYMBOL = 20;
-    var FIRST_INDEX = 0;
-    var MIN_SYMBOL = 1;
-    var NEXT = 1;
     var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
     if (hashTags[FIRST_INDEX] === '') {
@@ -245,17 +255,6 @@
     hashTagsField.style = '';
     comment.value = '';
   };
-
-  var PERCENT_SYMBOL = '%';
-  var MAX_VALUE = 100;
-  var MIN_VALUE = 0;
-  var FIELD_DEFAULT = 20;
-  var line = document.querySelector('.upload-effect-level-line');
-  var pin = line.querySelector('.upload-effect-level-pin');
-  var lineValue = line.querySelector('.upload-effect-level-val');
-  var mainLine = line.querySelector('.upload-effect-level-val');
-  var lineContainer = document.querySelector('.upload-effect-level');
-  var filterRadio = document.querySelector('.upload-effect-level-value');
 
   var getEffectValue = function (value, maxValueFilter) {
     var outputValue = maxValueFilter - (value * maxValueFilter / MAX_VALUE);
