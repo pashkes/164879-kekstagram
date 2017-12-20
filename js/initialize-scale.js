@@ -8,8 +8,10 @@
   var DECREMENT_CLASS = '.upload-resize-controls-button-dec';
   var INCREMENT_CLASS = '.upload-resize-controls-button-inc';
   var VALUE_CLASS = '.upload-resize-controls-value';
+  var controls;
+  var setZoomValue;
 
-  window.initializeScale = function (controls, adjustScale) {
+  var resizeHandler = function (event) {
     var zoomOut = event.target.closest(DECREMENT_CLASS);
     var zoomIn = event.target.closest(INCREMENT_CLASS);
     var zoomValue = controls.querySelector(VALUE_CLASS);
@@ -27,7 +29,13 @@
       currentValueZoom += STEP_ZOOM;
     }
     zoomValue.value = currentValueZoom + PERCENT_SYMBOL;
-    adjustScale(currentValueZoom);
+    setZoomValue(currentValueZoom);
+  };
+
+  window.initializeScale = function (zoomButtons, setZoomCallback) {
+    controls = zoomButtons;
+    setZoomValue = setZoomCallback;
+    controls.addEventListener('click', resizeHandler);
   };
 
 })();

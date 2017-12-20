@@ -1,61 +1,47 @@
 'use strict';
 (function () {
-  var HIDDEN_CLASS = 'hidden';
-  var ESC_KEY = 27;
-  var ENTER_KEY = 13;
   var form = document.querySelector('.upload-form');
-  var filtersContainer = document.querySelector('.upload-effect-controls');
-  var hashTagsField = document.querySelector('.upload-form-hashtags');
-  var formSubmit = document.querySelector('.upload-form-submit');
-  var imgPreview = document.querySelector('.effect-image-preview');
-  var uploadOverlay = document.querySelector('.upload-overlay');
-  var closeButton = document.querySelector('.upload-form-cancel');
-  var zoomValue = document.querySelector('.upload-resize-controls-value');
-  var resizeControls = document.querySelector('.upload-resize-controls');
-  var areaUploadPicture = document.querySelector('.upload-input');
+  var filtersContainer = form.querySelector('.upload-effect-controls');
+  var hashTagsField = form.querySelector('.upload-form-hashtags');
+  var formSubmit = form.querySelector('.upload-form-submit');
+  var imgPreview = form.querySelector('.effect-image-preview');
+  var uploadOverlay = form.querySelector('.upload-overlay');
+  var closeButton = form.querySelector('.upload-form-cancel');
+  var zoomValue = form.querySelector('.upload-resize-controls-value');
+  var resizeControls = form.querySelector('.upload-resize-controls');
+  var areaUploadPicture = form.querySelector('.upload-input');
+  var thumbnailsFilter = form.querySelectorAll('.upload-effect-preview');
+  var comment = form.querySelector('.upload-form-description');
 
-  /**
-   * Показать попап настройки загруженного изображения
-   * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
-   */
-
-  var showUploadOverlay = function () {
-    addHandlerForClosedState();
-    setSelectedPicture();
-    addFocusHandlerCommentsField();
-    addFilterSelector();
-    addHandlerCheckValidHashTagsFocus();
-    saveDataForm();
-    checkForFormErrors();
-    addHandlerMovePin();
-    addHandlerToggleZoom();
-    removeFilter();
-    sliderState.hideSlider();
-    resetZoomImgOnClosing();
-    resetValueField();
-    resetFilter();
-    window.initializeScale(resizeControls, setImgZoom);
-    uploadOverlay.classList.remove(HIDDEN_CLASS);
+  var formState = {
+    close: function () {
+      resetZoomImgOnClosing();
+      removeFilter();
+      resetZoomImgOnClosing();
+      resetValueField();
+      resetFilter();
+      removeClickCloseUpload();
+      removeFilterSelector();
+      uploadOverlay.classList.add(window.util.className.HIDDEN);
+    },
+    open: function () {
+      addHandlerForClosedState();
+      setSelectedPicture();
+      addFocusHandlerCommentsField();
+      addFilterSelector();
+      addHandlerCheckValidHashTagsFocus();
+      saveDataForm();
+      checkForFormErrors();
+      sliderState.hideSlider();
+      uploadOverlay.classList.remove(window.util.className.HIDDEN);
+    }
   };
 
-  var setSelectedPicture = function () {
-    var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
-    imgPreview.src = srcSelectImg;
-    var thumbnails = document.querySelectorAll('.upload-effect-preview');
-    thumbnails.forEach(function (thumbnail) {
-      thumbnail.style.backgroundImage = 'url(' + srcSelectImg + ')';
-    });
-  };
   /*
-   *
    * Добавление обработчика на изменения поля загрузки фото
    */
   var addHandlerUploadPhoto = function () {
-    areaUploadPicture.addEventListener('change', showUploadOverlay);
-  };
-
-  var hideUploadOverlay = function () {
-    uploadOverlay.classList.add(HIDDEN_CLASS);
+    areaUploadPicture.addEventListener('change', formState.open);
   };
 
   /*
@@ -67,30 +53,37 @@
     imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
   };
 
-  var zoomToggle = function () {
+  var renderGallery = function () {
+    addHandlerUploadPhoto();
     window.initializeScale(resizeControls, setImgZoom);
   };
+  renderGallery();
 
-  var addHandlerToggleZoom = function () {
-    resizeControls.addEventListener('click', zoomToggle);
+
+  var setSelectedPicture = function () {
+    var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
+    imgPreview.src = srcSelectImg;
+    for (var i = 0; i < thumbnailsFilter.length; i++) {
+      thumbnailsFilter[i].style.backgroundImage = 'url(' + srcSelectImg + ')';
+    }
   };
 
-  /**
-   * Сбросить зумм для картинки по умолчанию
-   */
+  /*
+  * Сбросить зумм для картинки по умолчанию
+  */
   var resetZoomImgOnClosing = function () {
     imgPreview.style.transform = 'scale(1)';
     zoomValue.value = MAX_VALUE + '%';
   };
 
-  /**
+  /*
    * Добавление обработчика валидации хэш тегов при изменения значения
    */
   var addHandlerCheckValidHashTagsFocus = function () {
     hashTagsField.addEventListener('change', checkValidHashTags);
   };
 
-  /**
+  /*
    * Добавление общего сброса всех полей и значения при отправке формы
    */
   var saveDataForm = function () {
@@ -101,25 +94,20 @@
     formSubmit.addEventListener('click', checkValidHashTags);
   };
 
-  var renderGallery = function () {
-    addHandlerUploadPhoto();
-  };
-  renderGallery();
-
-  /**
+  /*
    * Добавление бработчиков которые нужны внутри попапа
    */
   var addHandlerForClosedState = function () {
-    closeButton.addEventListener('click', hideUploadOverlay);
+    closeButton.addEventListener('click', formState.close);
     closeButton.addEventListener('keydown', hideWhenKeyDownEnter);
     document.addEventListener('keydown', hideWhenKeyDownEsc);
   };
 
-  /**
+  /*
    * Удаление обработчиков события для кнопки закрытия попапа и для документа
    */
   var removeClickCloseUpload = function () {
-    closeButton.removeEventListener('click', hideUploadOverlay);
+    closeButton.removeEventListener('click', formState.close);
     document.removeEventListener('keydown', hideWhenKeyDownEsc);
   };
 
@@ -128,9 +116,7 @@
    * скрывать попап
    */
   var hideWhenKeyDownEsc = function (event) {
-    if (event.keyCode === ESC_KEY) {
-      resetOnClose();
-    }
+    window.util.eventKey.esc(event, formState.close);
   };
 
   /*
@@ -138,12 +124,10 @@
    * скрывать попап
    */
   var hideWhenKeyDownEnter = function (event) {
-    if (event.keyCode === ENTER_KEY) {
-      resetOnClose();
-    }
+    window.util.eventKey.enter(event, formState.close);
   };
 
-  /**
+  /*
    * Если в фокусе - удалять обработчики закрытие попапа при нажатии эскейп
    * Если вышел с фокуса добавлять этот обработчик обратно
    */
@@ -154,33 +138,24 @@
   };
 
   /*
-   * Выбор фильтра
-   * Если нажатие вне фильтра - выйти из функции
-   * Получить for для текущего элемента, убрать префикс
-   * Если в изображения больше 2-х классов - удалить второй
-   * Иначе добавить класс выбранного фильтра для изображения
-   */
-
-
-  /*
    * Добавить обработчик для выбора фильтров
    */
-  var filterToggle = function (event) {
+  var filterSwitching = function (event) {
     var element = event.target.closest('.upload-effect-label');
     window.initializeFilter(element, resetFilter, sliderState);
   };
   var addFilterSelector = function () {
-    filtersContainer.addEventListener('click', filterToggle);
+    filtersContainer.addEventListener('click', filterSwitching);
   };
 
-  /**
+  /*
    * Удаление обработчика выбора фильтра
    */
   var removeFilterSelector = function () {
-    filtersContainer.removeEventListener('click', filterToggle);
+    filtersContainer.removeEventListener('click', filterSwitching);
   };
 
-  /**
+  /*
    * Удаление текущего эффекта с изображения
    */
   var removeFilter = function () {
@@ -218,37 +193,24 @@
 
   var successFormSend = function () {
     createErrorBlock('Форма успешно отправлена');
-    resetOnClose();
+    formState.close();
   };
 
   var errorFormSend = function (message) {
     createErrorBlock(message);
   };
+
   var sendDataForm = function (event) {
     event.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
 
-  var resetOnClose = function () {
-    removeFilter();
-    resetZoomImgOnClosing();
-    resetValueField();
-    resetFilter();
-    removeClickCloseUpload();
-    removeFilterSelector();
-    hideUploadOverlay();
-  };
-
-  /*
-   * Валидация списка хэш тегов
-   * Если не валидно добавлять стиль ошибки полю
-   * Иначе сбрасывать стиль ошибки
-   */
   var checkValidHashTags = function (event) {
     var MAX_AMOUNT = 5;
     var MAX_SYMBOL = 20;
     var FIRST_INDEX = 0;
     var MIN_SYMBOL = 1;
+    var NEXT = 1;
     var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
     if (hashTags[FIRST_INDEX] === '') {
@@ -259,7 +221,7 @@
         || hashTags[FIRST_INDEX] === ''
         || hashTags[i][FIRST_INDEX] !== '#'
         || hashTags[i] === ' '
-        || hashTags[i] === hashTags[i + 1]
+        || hashTags[i] === hashTags[i + NEXT]
         || hashTags[i].length <= MIN_SYMBOL
         || hashTags[i].length >= MAX_SYMBOL) {
         event.preventDefault();
@@ -270,59 +232,51 @@
     }
   };
 
-  /*
-   * Добавление красной тени
-   * Если resetStyle передан в метод сбросывать красную тень
-   */
   var addStyleErrorForField = function (resetStyle) {
+    var defaultValue = 'none';
     hashTagsField.style.boxShadow = '0 0 2px 2px red';
     if (resetStyle) {
-      hashTagsField.style.boxShadow = 'none';
+      hashTagsField.style.boxShadow = defaultValue;
     }
   };
 
-  /**
-   * Сброс полей формы
-   */
   var resetValueField = function () {
-    var message = document.querySelector('.upload-form-description');
     hashTagsField.value = '';
     hashTagsField.style = '';
-    message.value = '';
+    comment.value = '';
   };
 
-  var line = document.querySelector('.upload-effect-level-line');
-  var pin = line.querySelector('.upload-effect-level-pin');
-  var lineValue = line.querySelector('.upload-effect-level-val');
-  var sliderField = document.querySelector('.upload-effect-level-value');
-  var lineContainer = document.querySelector('.upload-effect-level');
-  var mainLine = document.querySelector('.upload-effect-level-val');
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
   var MIN_VALUE = 0;
   var FIELD_DEFAULT = 20;
+  var line = document.querySelector('.upload-effect-level-line');
+  var pin = line.querySelector('.upload-effect-level-pin');
+  var lineValue = line.querySelector('.upload-effect-level-val');
+  var mainLine = line.querySelector('.upload-effect-level-val');
+  var lineContainer = document.querySelector('.upload-effect-level');
+  var filterRadio = document.querySelector('.upload-effect-level-value');
 
-  /*
-   *
-   * @param value - текущее значение поля фильтра
-   * @param maxValueFilter - максимальное значение для выбранного фильтра
-   * @returns {string}
-   */
   var getEffectValue = function (value, maxValueFilter) {
-    return (maxValueFilter - (value * maxValueFilter / MAX_VALUE)).toFixed(2);
+    var outputValue = maxValueFilter - (value * maxValueFilter / MAX_VALUE);
+    return outputValue.toFixed(2);
+  };
+
+  var addHandlerMouseDown = function () {
+    pin.addEventListener('mousedown', addHandlerMovePin);
+  };
+
+  var addHandlerMovePin = function () {
+    document.addEventListener('mousemove', movePin);
+    document.addEventListener('mouseup', removeHandlerMovePin);
   };
 
   var removeHandlerMovePin = function () {
     document.removeEventListener('mousemove', movePin);
   };
 
-  var addHandlerMovePin = function () {
-    pin.addEventListener('mousedown', addHandlerForMouse);
-  };
-
-  var addHandlerForMouse = function () {
-    document.addEventListener('mousemove', movePin);
-    document.addEventListener('mouseup', removeHandlerMovePin);
+  var removeHandlerMouseDown = function () {
+    document.removeEventListener('mousedown', addHandlerMovePin);
   };
 
   /*
@@ -346,21 +300,24 @@
     } else {
       pin.style.left = shiftString;
       lineValue.style.width = shiftString;
-      sliderField.value = shift;
+      filterRadio.value = shift;
     }
     setFilterStyle();
   };
 
   var sliderState = {
     showSlider: function () {
-      lineContainer.classList.remove('hidden');
+      addHandlerMouseDown();
+      lineContainer.classList.remove(window.util.className.HIDDEN);
     },
     hideSlider: function () {
-      lineContainer.classList.add('hidden');
+      lineContainer.classList.add(window.util.className.HIDDEN);
+      removeHandlerMouseDown();
+      resetFilter();
     }
   };
 
-  /**
+  /*
    * Проверяем наличие последнего класса в фото
    * Если совпало применять фильтры
    */
@@ -369,31 +326,31 @@
     var lastClass = imgList[imgList.length - 1];
     switch (lastClass) {
       case 'effect-chrome':
-        imgPreview.style.filter = 'grayscale(' + getEffectValue(sliderField.value, 1) + ')';
+        imgPreview.style.filter = 'grayscale(' + getEffectValue(filterRadio.value, 1) + ')';
         break;
       case 'effect-sepia':
-        imgPreview.style.filter = 'sepia(' + getEffectValue(sliderField.value, 1) + ')';
+        imgPreview.style.filter = 'sepia(' + getEffectValue(filterRadio.value, 1) + ')';
         break;
       case 'effect-marvin':
-        imgPreview.style.filter = 'invert(' + getEffectValue(sliderField.value, 100) + '%)';
+        imgPreview.style.filter = 'invert(' + getEffectValue(filterRadio.value, 100) + '%)';
         break;
       case 'effect-phobos':
-        imgPreview.style.filter = 'blur(' + getEffectValue(sliderField.value, 3) + 'px)';
+        imgPreview.style.filter = 'blur(' + getEffectValue(filterRadio.value, 3) + 'px)';
         break;
       case 'effect-heat':
-        imgPreview.style.filter = 'brightness(' + getEffectValue(sliderField.value, 3) + ')';
+        imgPreview.style.filter = 'brightness(' + getEffectValue(filterRadio.value, 3) + ')';
         break;
     }
   };
 
-  /**
+  /*
    * Сброс стилей фильтра для фото
    * Сброс поля значения фильтра до значение по умолчанию
    * Сброс слайдера до значения по умолчанию
    */
   var resetFilter = function () {
     imgPreview.style.filter = '';
-    sliderField.value = FIELD_DEFAULT;
+    filterRadio.value = FIELD_DEFAULT;
     pin.style.left = FIELD_DEFAULT + PERCENT_SYMBOL;
     lineValue.style.width = FIELD_DEFAULT + PERCENT_SYMBOL;
   };
