@@ -20,6 +20,18 @@
     },
     className: {
       HIDDEN: 'hidden'
+    },
+    eventKey: {
+      enter: function (event, func) {
+        if (event.keyCode === window.util.keyCode.ENTER) {
+          func();
+        }
+      },
+      esc: function (event, func) {
+        if (event.keyCode === window.util.keyCode.ESC) {
+          func();
+        }
+      }
     }
   };
 })();

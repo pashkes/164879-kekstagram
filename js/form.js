@@ -13,22 +13,35 @@
   var thumbnailsFilter = form.querySelectorAll('.upload-effect-preview');
   var comment = form.querySelector('.upload-form-description');
 
+  var formState = {
+    close: function () {
+      resetZoomImgOnClosing();
+      removeFilter();
+      resetZoomImgOnClosing();
+      resetValueField();
+      resetFilter();
+      removeClickCloseUpload();
+      removeFilterSelector();
+      uploadOverlay.classList.add(window.util.className.HIDDEN);
+    },
+    open: function () {
+      addHandlerForClosedState();
+      setSelectedPicture();
+      addFocusHandlerCommentsField();
+      addFilterSelector();
+      addHandlerCheckValidHashTagsFocus();
+      saveDataForm();
+      checkForFormErrors();
+      sliderState.hideSlider();
+      uploadOverlay.classList.remove(window.util.className.HIDDEN);
+    }
+  };
+
   /*
-   * Показать попап настройки загруженного изображения
-   * Добавляет хэндлеры которые нужны только внутри открытого состояния попапа
+   * Добавление обработчика на изменения поля загрузки фото
    */
-  var showUploadOverlay = function () {
-    addHandlerForClosedState();
-    setSelectedPicture();
-    addFocusHandlerCommentsField();
-    addFilterSelector();
-    addHandlerCheckValidHashTagsFocus();
-    saveDataForm();
-    checkForFormErrors();
-    sliderState.hideSlider();
-    resetZoomImgOnClosing();
-    resetValueField();
-    uploadOverlay.classList.remove(window.util.className.HIDDEN);
+  var addHandlerUploadPhoto = function () {
+    areaUploadPicture.addEventListener('change', formState.open);
   };
 
   /*
@@ -40,6 +53,13 @@
     imgPreview.style.transform = 'scale(' + value / MAX_VALUE + ')';
   };
 
+  var renderGallery = function () {
+    addHandlerUploadPhoto();
+    window.initializeScale(resizeControls, setImgZoom);
+  };
+  renderGallery();
+
+
   var setSelectedPicture = function () {
     var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
     imgPreview.src = srcSelectImg;
@@ -49,20 +69,8 @@
   };
 
   /*
-   *
-   * Добавление обработчика на изменения поля загрузки фото
-   */
-  var addHandlerUploadPhoto = function () {
-    areaUploadPicture.addEventListener('change', showUploadOverlay);
-  };
-
-  var hideUploadOverlay = function () {
-    uploadOverlay.classList.add(window.util.className.HIDDEN);
-  };
-
-  /*
-   * Сбросить зумм для картинки по умолчанию
-   */
+  * Сбросить зумм для картинки по умолчанию
+  */
   var resetZoomImgOnClosing = function () {
     imgPreview.style.transform = 'scale(1)';
     zoomValue.value = MAX_VALUE + '%';
@@ -86,17 +94,11 @@
     formSubmit.addEventListener('click', checkValidHashTags);
   };
 
-  var renderGallery = function () {
-    addHandlerUploadPhoto();
-    window.initializeScale(resizeControls, setImgZoom);
-  };
-  renderGallery();
-
   /*
    * Добавление бработчиков которые нужны внутри попапа
    */
   var addHandlerForClosedState = function () {
-    closeButton.addEventListener('click', hideUploadOverlay);
+    closeButton.addEventListener('click', formState.close);
     closeButton.addEventListener('keydown', hideWhenKeyDownEnter);
     document.addEventListener('keydown', hideWhenKeyDownEsc);
   };
@@ -105,7 +107,7 @@
    * Удаление обработчиков события для кнопки закрытия попапа и для документа
    */
   var removeClickCloseUpload = function () {
-    closeButton.removeEventListener('click', hideUploadOverlay);
+    closeButton.removeEventListener('click', formState.close);
     document.removeEventListener('keydown', hideWhenKeyDownEsc);
   };
 
@@ -114,9 +116,7 @@
    * скрывать попап
    */
   var hideWhenKeyDownEsc = function (event) {
-    if (event.keyCode === window.util.keyCode.ESC) {
-      resetOnClose();
-    }
+    window.util.eventKey.esc(event, formState.close);
   };
 
   /*
@@ -124,9 +124,7 @@
    * скрывать попап
    */
   var hideWhenKeyDownEnter = function (event) {
-    if (event.keyCode === window.util.keyCode.ENTER) {
-      resetOnClose();
-    }
+    window.util.eventKey.enter(event, formState.close);
   };
 
   /*
@@ -195,7 +193,7 @@
 
   var successFormSend = function () {
     createErrorBlock('Форма успешно отправлена');
-    resetOnClose();
+    formState.close();
   };
 
   var errorFormSend = function (message) {
@@ -205,16 +203,6 @@
   var sendDataForm = function (event) {
     event.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
-  };
-
-  var resetOnClose = function () {
-    removeFilter();
-    resetZoomImgOnClosing();
-    resetValueField();
-    resetFilter();
-    removeClickCloseUpload();
-    removeFilterSelector();
-    hideUploadOverlay();
   };
 
   var checkValidHashTags = function (event) {
@@ -329,7 +317,7 @@
     }
   };
 
-  /**
+  /*
    * Проверяем наличие последнего класса в фото
    * Если совпало применять фильтры
    */
@@ -355,7 +343,7 @@
     }
   };
 
-  /**
+  /*
    * Сброс стилей фильтра для фото
    * Сброс поля значения фильтра до значение по умолчанию
    * Сброс слайдера до значения по умолчанию

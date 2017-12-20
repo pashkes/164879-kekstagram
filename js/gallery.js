@@ -45,7 +45,6 @@
     data = dataLoad.slice(0);
     filters.style.opacity = visibility;
     window.picture.createDOMElements(data);
-    window.preview.renderBigPicture(data);
     filters.addEventListener('click', getFilterName);
   };
 
