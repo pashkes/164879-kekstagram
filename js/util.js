@@ -5,9 +5,6 @@
   var lastTimeOut;
 
   window.util = {
-    getRangeRandomNumbers: function (min, max) {
-      return Math.round(Math.random() * (max - min) + min);
-    },
     debounc: function (func) {
       if (lastTimeOut) {
         clearInterval(lastTimeOut);
