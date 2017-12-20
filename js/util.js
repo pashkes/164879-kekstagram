@@ -26,7 +26,7 @@
           func();
         }
       },
-      esc: function (event, func) {
+      escape: function (event, func) {
         if (event.keyCode === ESC_KEY) {
           func();
         }
