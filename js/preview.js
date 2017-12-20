@@ -40,13 +40,13 @@
 
   var getDataPreview = function (event) {
     event.preventDefault();
-    var target = event.target.closest('.picture');
-    if (!target) {
+    var pictureElement = event.target.closest('.picture');
+    if (!pictureElement) {
       return;
     }
-    var srcPicture = target.querySelector('img').src;
-    var likesCount = target.querySelector('.picture-likes').textContent;
-    var commentCount = target.querySelectorAll('.picture-comments').length;
+    var srcPicture = pictureElement.querySelector('img').src;
+    var likesCount = pictureElement.querySelector('.picture-likes').textContent;
+    var commentCount = pictureElement.querySelectorAll('.picture-comments').length;
     likes.textContent = likesCount;
     previewPicture.src = srcPicture;
     commentsCount.textContent = commentCount;

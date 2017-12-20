@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  var picturesContainer = document.querySelector('.pictures');
   var COMMENTS_CLASS = '.picture-comments';
   var LIKES_CLASS = '.picture-likes';
+  var picturesContainer = document.querySelector('.pictures');
   var template = document.querySelector('#picture-template');
   var templateContent = template.content.querySelector('.picture');
 

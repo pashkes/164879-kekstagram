@@ -3,13 +3,13 @@
 (function () {
   var RANDOM_FACTOR = 0.5;
 
-  var visibility = '1';
+  var VISIBILITY = '1';
   var filters = document.querySelector('.filters-inactive');
   var sorted;
   var data;
   var filterOnClick;
 
-  var sorting = function () {
+  var doSorting = function () {
     var cloneData = data.slice(0);
     switch (filterOnClick) {
       case 'popular':
@@ -38,12 +38,12 @@
     if (event.target.type !== 'radio') {
       return;
     }
-    window.util.debounc(sorting);
+    window.util.debounce(doSorting);
   };
 
   var successLoad = function (dataLoad) {
     data = dataLoad.slice(0);
-    filters.style.opacity = visibility;
+    filters.style.opacity = VISIBILITY;
     window.picture.createDOMElements(data);
     filters.addEventListener('click', getFilterName);
   };

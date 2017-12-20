@@ -2,10 +2,12 @@
 
 (function () {
   var DEBOUNCE_TIME = 500;
+  var ESC_KEY = 27;
+  var ENTER_KEY = 13;
   var lastTimeOut;
 
   window.util = {
-    debounc: function (func) {
+    debounce: function (func) {
       if (lastTimeOut) {
         clearInterval(lastTimeOut);
       }
@@ -20,12 +22,12 @@
     },
     eventKey: {
       enter: function (event, func) {
-        if (event.keyCode === window.util.keyCode.ENTER) {
+        if (event.keyCode === ENTER_KEY) {
           func();
         }
       },
       esc: function (event, func) {
-        if (event.keyCode === window.util.keyCode.ESC) {
+        if (event.keyCode === ESC_KEY) {
           func();
         }
       }

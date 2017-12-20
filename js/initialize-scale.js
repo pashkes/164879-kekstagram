@@ -32,9 +32,9 @@
     setZoomValue(currentValueZoom);
   };
 
-  window.initializeScale = function (zoomButtons, cb) {
+  window.initializeScale = function (zoomButtons, setZoomCallback) {
     controls = zoomButtons;
-    setZoomValue = cb;
+    setZoomValue = setZoomCallback;
     controls.addEventListener('click', resizeHandler);
   };
 
