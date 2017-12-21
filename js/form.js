@@ -220,6 +220,9 @@
     hashTags = '';
     hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
+    if (hashTags[0] === '') {
+      return;
+    }
     for (var i = 0; i < hashTags.length; i++) {
       if (hashTags[i][0] !== '#') {
         event.preventDefault();
