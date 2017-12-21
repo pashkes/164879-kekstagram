@@ -228,7 +228,7 @@
         errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
         addStyleErrorForField();
         break;
-      } else if (hashTags[i].length <= 2) {
+      } else if (hashTags[i].length <= 1) {
         event.preventDefault();
         errorBlock.textContent = 'Минимальное количество символов в хэш теге 1';
         addStyleErrorForField();
