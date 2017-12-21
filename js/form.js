@@ -214,14 +214,12 @@
     event.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
-
+  var hashTags;
   var errorBlock = form.querySelector('.error-messages');
   var checkValidHashTags = function (event) {
-    var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
+    hashTags = '';
+    hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
-    if (hashTags[0] === '') {
-      return;
-    }
     for (var i = 0; i < hashTags.length; i++) {
       if (hashTags[i][0] !== '#') {
         event.preventDefault();
@@ -241,11 +239,6 @@
       } else if (hashTags[i] === hashTags[i + 1]) {
         event.preventDefault();
         errorBlock.textContent = 'Один и тот же хэш-тег не может быть использован дважды';
-        addStyleErrorForField();
-        break;
-      } else if (hashTags.length > MAX_AMOUNT) {
-        event.preventDefault();
-        errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
         addStyleErrorForField();
         break;
       } else if (hashTags.length > MAX_AMOUNT) {
@@ -357,6 +350,8 @@
         break;
       case 'effect-heat':
         imgPreview.style.filter = 'brightness(' + getEffectValue(filterRadio.value, 3) + ')';
+        break;
+      default:
         break;
     }
   };
