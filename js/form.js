@@ -2,12 +2,8 @@
 (function () {
   var MAX_AMOUNT = 5;
   var MAX_SYMBOL = 20;
-  var FIRST_INDEX = 0;
-  var MIN_SYMBOL = 1;
-  var NEXT = 1;
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
-  var MIN_VALUE = 0;
   var FIELD_DEFAULT = 20;
   var form = document.querySelector('.upload-form');
   var filtersContainer = form.querySelector('.upload-effect-controls');
@@ -219,26 +215,45 @@
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
 
+  var errorBlock = form.querySelector('.error-messages');
   var checkValidHashTags = function (event) {
     var hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
     var resetStyleError = true;
-    if (hashTags[FIRST_INDEX] === '') {
+    if (hashTags[0] === '') {
       return;
     }
     for (var i = 0; i < hashTags.length; i++) {
-      if (hashTags.length > MAX_AMOUNT
-        || hashTags[FIRST_INDEX] === ''
-        || hashTags[i][FIRST_INDEX] !== '#'
-        || hashTags[i] === ' '
-        || hashTags[i] === hashTags[i + NEXT]
-        || hashTags[i].length <= MIN_SYMBOL
-        || hashTags[i].length >= MAX_SYMBOL) {
+      if (hashTags[i][0] !== '#') {
         event.preventDefault();
+        errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
+        addStyleErrorForField();
+        break;
+      } else if (hashTags[i].length <= 1) {
+        errorBlock.textContent = 'Минимальное количество символов в хэш теге 1';
+        errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
+        addStyleErrorForField();
+        break;
+      } else if (hashTags[i].length >= MAX_SYMBOL) {
+        errorBlock.textContent = 'максимальная длина одного хэш-тега ' + MAX_SYMBOL + ' символов';
+        addStyleErrorForField();
+        break;
+      } else if (hashTags[i] === hashTags[i + 1]) {
+        errorBlock.textContent = 'Один и тот же хэш-тег не может быть использован дважды';
+        addStyleErrorForField();
+        break;
+      } else if (hashTags.length > MAX_AMOUNT) {
+        errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
+        addStyleErrorForField();
+        break;
+      } else if (hashTags.length > MAX_AMOUNT) {
+        errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
         addStyleErrorForField();
         break;
       }
+
       addStyleErrorForField(resetStyleError);
     }
+
   };
 
   var addStyleErrorForField = function (resetStyle) {
@@ -246,6 +261,7 @@
     hashTagsField.style.boxShadow = '0 0 2px 2px red';
     if (resetStyle) {
       hashTagsField.style.boxShadow = defaultValue;
+      errorBlock.textContent = '';
     }
   };
 
@@ -292,9 +308,9 @@
     if (shift >= MAX_VALUE) {
       pin.style.lef = MAX_VALUE;
       lineValue.style.width = MAX_VALUE;
-    } else if (shift <= MIN_VALUE) {
-      pin.style.left = MIN_VALUE;
-      lineValue.style.width = MIN_VALUE;
+    } else if (shift <= 0) {
+      pin.style.left = 0;
+      lineValue.style.width = 0;
     } else {
       pin.style.left = shiftString;
       lineValue.style.width = shiftString;

@@ -868,3 +868,11 @@ input[type=radio]:checked + .upload-effect-label .upload-effect-preview {
 .upload-form-preview img {
   max-width: 830px;
 }
+.error-messages {
+  display: inline-block;
+  width: 494px;
+  margin: 0 auto;
+  color: red;
+  padding: 5px 5px 5px 0;
+  text-align: left;
+}
