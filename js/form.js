@@ -228,24 +228,28 @@
         errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
         addStyleErrorForField();
         break;
-      } else if (hashTags[i].length <= 1) {
+      } else if (hashTags[i].length <= 2) {
+        event.preventDefault();
         errorBlock.textContent = 'Минимальное количество символов в хэш теге 1';
-        errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
         addStyleErrorForField();
         break;
       } else if (hashTags[i].length >= MAX_SYMBOL) {
+        event.preventDefault();
         errorBlock.textContent = 'максимальная длина одного хэш-тега ' + MAX_SYMBOL + ' символов';
         addStyleErrorForField();
         break;
       } else if (hashTags[i] === hashTags[i + 1]) {
+        event.preventDefault();
         errorBlock.textContent = 'Один и тот же хэш-тег не может быть использован дважды';
         addStyleErrorForField();
         break;
       } else if (hashTags.length > MAX_AMOUNT) {
+        event.preventDefault();
         errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
         addStyleErrorForField();
         break;
       } else if (hashTags.length > MAX_AMOUNT) {
+        event.preventDefault();
         errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
         addStyleErrorForField();
         break;
