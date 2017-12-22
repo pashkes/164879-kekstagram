@@ -11,9 +11,9 @@
   var controls;
   var setZoomValue;
 
-  var resizeHandler = function (event) {
-    var zoomOut = event.target.closest(DECREMENT_CLASS);
-    var zoomIn = event.target.closest(INCREMENT_CLASS);
+  var resizeHandler = function (evt) {
+    var zoomOut = evt.target.closest(DECREMENT_CLASS);
+    var zoomIn = evt.target.closest(INCREMENT_CLASS);
     var zoomValue = controls.querySelector(VALUE_CLASS);
     var currentValueZoom = parseInt(zoomValue.value, 10);
     if (zoomOut) {

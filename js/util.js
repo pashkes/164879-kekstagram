@@ -21,13 +21,13 @@
       HIDDEN: 'hidden'
     },
     eventKey: {
-      enter: function (event, func) {
-        if (event.keyCode === ENTER_KEY) {
+      enter: function (evt, func) {
+        if (evt.keyCode === ENTER_KEY) {
           func();
         }
       },
-      escape: function (event, func) {
-        if (event.keyCode === ESC_KEY) {
+      escape: function (evt, func) {
+        if (evt.keyCode === ESC_KEY) {
           func();
         }
       }
