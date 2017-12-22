@@ -33,9 +33,9 @@
     window.picture.createDOMElements(sorted);
   };
 
-  var getFilterName = function (event) {
-    filterOnClick = event.target.value;
-    if (event.target.type !== 'radio') {
+  var getFilterName = function (evt) {
+    filterOnClick = evt.target.value;
+    if (evt.target.type !== 'radio') {
       return;
     }
     window.util.debounce(doSorting);

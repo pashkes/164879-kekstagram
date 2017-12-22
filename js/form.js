@@ -23,6 +23,7 @@
   var mainLine = line.querySelector('.upload-effect-level-val');
   var lineContainer = document.querySelector('.upload-effect-level');
   var filterRadio = document.querySelector('.upload-effect-level-value');
+  var resetStyleError = true;
 
   var formState = {
     close: function () {
@@ -34,6 +35,7 @@
       removeClickCloseUpload();
       removeFilterSelector();
       uploadOverlay.classList.add(window.util.className.HIDDEN);
+      addStyleErrorForField(resetStyleError);
     },
     open: function () {
       addHandlerForClosedState();
@@ -125,16 +127,16 @@
    * При нажатии ескейп сбрасывать все значения, удалять обработчики которые нужны внутри попапа
    * скрывать попап
    */
-  var hideWhenKeyDownEsc = function (event) {
-    window.util.eventKey.escape(event, formState.close);
+  var hideWhenKeyDownEsc = function (evt) {
+    window.util.eventKey.escape(evt, formState.close);
   };
 
   /*
    * При нажатии ентер сбрасывать все значения, удалять обработчики которые нужны внутри попапа
    * скрывать попап
    */
-  var hideWhenKeyDownEnter = function (event) {
-    window.util.eventKey.enter(event, formState.close);
+  var hideWhenKeyDownEnter = function (evt) {
+    window.util.eventKey.enter(evt, formState.close);
   };
 
   /*
@@ -150,8 +152,8 @@
   /*
    * Добавить обработчик для выбора фильтров
    */
-  var filterSwitching = function (event) {
-    var element = event.target.closest('.upload-effect-label');
+  var filterSwitching = function (evt) {
+    var element = evt.target.closest('.upload-effect-label');
     window.initializeFilter(element, resetFilter, sliderState);
   };
   var addFilterSelector = function () {
@@ -210,47 +212,45 @@
     createErrorBlock(message);
   };
 
-  var sendDataForm = function (event) {
-    event.preventDefault();
+  var sendDataForm = function (evt) {
+    evt.preventDefault();
     window.backend.save(new FormData(form), successFormSend, errorFormSend);
   };
   var hashTags;
   var errorBlock = form.querySelector('.error-messages');
-  var checkValidHashTags = function (event) {
-    hashTags = '';
+  var checkValidHashTags = function (evt) {
     hashTags = hashTagsField.value.toLowerCase().trim().split(' ').sort();
-    var resetStyleError = true;
     if (hashTags[0] === '') {
+      addStyleErrorForField(resetStyleError);
       return;
     }
     for (var i = 0; i < hashTags.length; i++) {
       if (hashTags[i][0] !== '#') {
-        event.preventDefault();
+        evt.preventDefault();
         errorBlock.textContent = 'Хэш тег должен начинатся с символа "#"';
         addStyleErrorForField();
         break;
       } else if (hashTags[i].length <= 1) {
-        event.preventDefault();
+        evt.preventDefault();
         errorBlock.textContent = 'Минимальное количество символов в хэш теге 1';
         addStyleErrorForField();
         break;
       } else if (hashTags[i].length >= MAX_SYMBOL) {
-        event.preventDefault();
+        evt.preventDefault();
         errorBlock.textContent = 'максимальная длина одного хэш-тега ' + MAX_SYMBOL + ' символов';
         addStyleErrorForField();
         break;
       } else if (hashTags[i] === hashTags[i + 1]) {
-        event.preventDefault();
+        evt.preventDefault();
         errorBlock.textContent = 'Один и тот же хэш-тег не может быть использован дважды';
         addStyleErrorForField();
         break;
       } else if (hashTags.length > MAX_AMOUNT) {
-        event.preventDefault();
+        evt.preventDefault();
         errorBlock.textContent = 'нельзя указать больше ' + MAX_AMOUNT + ' хэш-тегов';
         addStyleErrorForField();
         break;
       }
-
       addStyleErrorForField(resetStyleError);
     }
 
@@ -299,9 +299,9 @@
    * Проверяем смещение пина в диапазоне от 0 - 100
    * Применяем текущее значение пина для фото
    */
-  var movePin = function (event) {
+  var movePin = function (evt) {
     var lineWidth = line.offsetWidth;
-    var startX = event.clientX;
+    var startX = evt.clientX;
     var offsetLeft = mainLine.getBoundingClientRect().left;
     var shift = Math.floor((startX - offsetLeft) * MAX_VALUE / lineWidth);
     var shiftString = shift + PERCENT_SYMBOL;

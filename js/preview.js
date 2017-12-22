@@ -30,17 +30,17 @@
     document.removeEventListener('keydown', closeOnEsc);
   };
 
-  var closeOnEsc = function (event) {
-    window.util.eventKey.escape(event, closePopup);
+  var closeOnEsc = function (evt) {
+    window.util.eventKey.escape(evt, closePopup);
   };
 
-  var closeOnEnter = function (event) {
-    window.util.eventKey.enter(event, closePopup);
+  var closeOnEnter = function (evt) {
+    window.util.eventKey.enter(evt, closePopup);
   };
 
-  var getDataPreview = function (event) {
-    event.preventDefault();
-    var pictureElement = event.target.closest('.picture');
+  var getDataPreview = function (evt) {
+    evt.preventDefault();
+    var pictureElement = evt.target.closest('.picture');
     if (!pictureElement) {
       return;
     }
