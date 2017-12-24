@@ -278,20 +278,44 @@
 
   var addHandlerMouseDown = function () {
     pin.addEventListener('mousedown', addHandlerMovePin);
+    pin.addEventListener('touchstart', addHandlerMovePin);
+  };
+
+  var onLineOver = function () {
+    lineContainer.addEventListener('click', movePin);
+  };
+
+  var removeLineOver = function () {
+    lineContainer.removeEventListener('click', movePin);
+  };
+
+  var addHandlerClickMouse = function () {
+    lineContainer.addEventListener('mouseover', onLineOver);
+    lineContainer.addEventListener('mouseout', removeLineOver);
+  };
+
+  var removeHandlerClickMouse = function () {
+    lineContainer.removeEventListener('mouseover', onLineOver);
+    lineContainer.removeEventListener('mouseout', removeLineOver);
   };
 
   var addHandlerMovePin = function () {
     document.addEventListener('mousemove', movePin);
+    document.addEventListener('touchmove', movePin);
     document.addEventListener('mouseup', removeHandlerMovePin);
+    document.addEventListener('touchend', removeHandlerMovePin);
   };
 
   var removeHandlerMovePin = function () {
     document.removeEventListener('mousemove', movePin);
+    document.removeEventListener('touchmove', movePin);
   };
 
   var removeHandlerMouseDown = function () {
     document.removeEventListener('mousedown', addHandlerMovePin);
+    pin.addEventListener('touchstart', addHandlerMovePin);
   };
+
 
   /*
    * Получаем стартовые координаты мыши по оси х
@@ -301,7 +325,12 @@
    */
   var movePin = function (evt) {
     var lineWidth = line.offsetWidth;
-    var startX = evt.clientX;
+    var startX;
+    if (evt.changedTouches) {
+      startX = evt.changedTouches[0].clientX;
+    } else {
+      startX = evt.clientX;
+    }
     var offsetLeft = mainLine.getBoundingClientRect().left;
     var shift = Math.floor((startX - offsetLeft) * MAX_VALUE / lineWidth);
     var shiftString = shift + PERCENT_SYMBOL;
@@ -322,12 +351,14 @@
   var sliderState = {
     showSlider: function () {
       addHandlerMouseDown();
+      addHandlerClickMouse();
       lineContainer.classList.remove(window.util.className.HIDDEN);
     },
     hideSlider: function () {
-      lineContainer.classList.add(window.util.className.HIDDEN);
       removeHandlerMouseDown();
+      removeHandlerClickMouse();
       resetFilter();
+      lineContainer.classList.add(window.util.className.HIDDEN);
     }
   };
 
