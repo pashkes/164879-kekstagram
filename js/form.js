@@ -5,6 +5,7 @@
   var PERCENT_SYMBOL = '%';
   var MAX_VALUE = 100;
   var FIELD_DEFAULT = 20;
+  var FILE_TYPES = ['gif', 'png', 'jpeg', 'jpg'];
   var form = document.querySelector('.upload-form');
   var filtersContainer = form.querySelector('.upload-effect-controls');
   var hashTagsField = form.querySelector('.upload-form-hashtags');
@@ -71,14 +72,24 @@
   };
   renderGallery();
 
-
   var setSelectedPicture = function () {
-    var srcSelectImg = window.URL.createObjectURL(areaUploadPicture.files[0]);
-    imgPreview.src = srcSelectImg;
-    for (var i = 0; i < thumbnailsFilter.length; i++) {
-      thumbnailsFilter[i].style.backgroundImage = 'url(' + srcSelectImg + ')';
+    var file = areaUploadPicture.files[0];
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (e) {
+      return fileName.endsWith(e);
+    });
+    if (matches) {
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        imgPreview.src = reader.result;
+        thumbnailsFilter.forEach(function () {
+          thumbnailsFilter.style.backgroundImage = 'url(' + reader.result + ')';
+        });
+      });
+      reader.readAsDataURL(file);
     }
   };
+
 
   /*
   * Сбросить зумм для картинки по умолчанию
@@ -192,12 +203,9 @@
 
   var createErrorBlock = function (text) {
     var fragment = document.createElement('div');
-    fragment.style = 'width: 300px; position: fixed; top: 50%; left: 50%; z-index: 2; text-align: center; transform: translate(-50%, -50%); min-height: 100px; padding: 20px; border-radius: 10px; background-color: #fff';
+    fragment.className = 'error';
     var message = document.createElement('p');
     message.textContent = text;
-    message.style.fontSize = '20px';
-    message.style.fontWeight = 'bold';
-    message.style.color = '#000';
     fragment.appendChild(message);
     document.body.appendChild(fragment);
     removeError(fragment);
