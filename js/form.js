@@ -82,9 +82,9 @@
       var reader = new FileReader();
       reader.addEventListener('load', function () {
         imgPreview.src = reader.result;
-        thumbnailsFilter.forEach(function () {
-          thumbnailsFilter.style.backgroundImage = 'url(' + reader.result + ')';
-        });
+        for (var i = 0; i < thumbnailsFilter.length; i++) {
+          thumbnailsFilter[i].style.backgroundImage = 'url(' + reader.result + ')';
+        }
       });
       reader.readAsDataURL(file);
     }
