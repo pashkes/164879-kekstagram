@@ -1,4 +1,4 @@
-[GitHub](https://htmlacademy.github.io/intensive-javascript-criteria/)
+[Список всех критериев](https://htmlacademy.github.io/intensive-javascript-criteria/)
 # Техническое задание
 ## Проект: Кекстаграм
 * Название сайта: Кекстаграм.
